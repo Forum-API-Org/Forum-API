@@ -33,6 +33,3 @@ def credentials_reader():
 
     return credentials
 
-
-print(credentials_reader())
-

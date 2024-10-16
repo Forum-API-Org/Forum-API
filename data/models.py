@@ -26,7 +26,16 @@ class Reply(BaseModel):
     user_id: int
     reply_date: date
     reply_text: str
-    replies_reply_id: int
+    #replies_reply_id: int
+
+    @classmethod
+    def from_query_result(cls, id, topic_id, user_id, reply_date, reply_text):
+        return cls(id=id,
+                   topic_id=topic_id,
+                   user_id=user_id,
+                   reply_date=reply_date,
+                   reply_text=reply_text
+        )
 
 
 class User(BaseModel):
@@ -61,6 +70,13 @@ class Vote(BaseModel):
     user_id: int
     reply_id: int
     vote: bool
+
+    @classmethod
+    def from_query_result(cls, user_id, reply_id, vote):
+        return cls(user_id=user_id,
+                   reply_id=reply_id,
+                   vote=vote
+        )
 
 
 class PrivateCatAccess(BaseModel):

@@ -6,7 +6,7 @@
   </component>
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DatabaseBrowserManager">
@@ -28,6 +28,9 @@
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="eaa034ab-14f8-4ff3-a3bb-9a17d8df80b3" />
+  </component>
+  <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="eaa034ab-14f8-4ff3-a3bb-9a17d8df80b3" dataset="forum_3.categories" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />

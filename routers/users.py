@@ -13,7 +13,10 @@ def get_all_users():
 
 @user_router.post('/register')
 def register_user(email: str, username: str, password: str, first_name: str, last_name: str):
-
+    #if email validation
+    #if username validation
+    # decide if password validation
+    #first and last name validations (containt only strings)
     user = users_service.create_user(email, username, password, first_name, last_name)
 
-    return user or BadRequest(f'Username {username} is taken.')
+    return user #or BadRequest(f'Username {username} is taken.')

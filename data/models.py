@@ -2,7 +2,7 @@ from datetime import date
 from pydantic import BaseModel
 
 
-class Categories(BaseModel):
+class Category(BaseModel):
     id: int | None
     cat_name: str
     creator_id: int
@@ -10,7 +10,7 @@ class Categories(BaseModel):
     is_private: bool
 
 
-class Topics(BaseModel):
+class Topic(BaseModel):
     id: int | None
     top_name: str
     category_id: int
@@ -20,7 +20,7 @@ class Topics(BaseModel):
     best_reply_id: int
 
 
-class Replies(BaseModel):
+class Reply(BaseModel):
     id: int | None
     topic_id: int
     user_id: int
@@ -29,7 +29,7 @@ class Replies(BaseModel):
     replies_reply_id: int
 
 
-class Users(BaseModel):
+class User(BaseModel):
     id: int | None
     email: str
     username: str
@@ -38,8 +38,16 @@ class Users(BaseModel):
     last_name: str
     is_admin: bool
 
+    @classmethod
+    def from_query_result(cls, email, username, first_name, last_name, is_admin):
+        return cls(email=email,
+                   username=username,
+                   first_name=first_name,
+                   last_name=last_name,
+                   is_admin=is_admin)
 
-class Messages(BaseModel):
+
+class Message(BaseModel):
     id: int | None
     sender_id: int
     receiver_id: int
@@ -47,7 +55,7 @@ class Messages(BaseModel):
     message_text: str
 
 
-class Votes(BaseModel):
+class Vote(BaseModel):
     user_id: int
     reply_id: int
     vote: bool

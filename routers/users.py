@@ -1,4 +1,4 @@
 from fastapi import APIRouter
 
-user_router = APIRouter()
-@user_router.get('/users', response_model=List[schemas.User])
+user_router = APIRouter(prefix = 'users', tags = ['Users'])
+@user_router.get('/') #response_model=List[schemas.User]

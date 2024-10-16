@@ -43,7 +43,7 @@ class User(BaseModel):
         return cls(id=id,
                    email=email,
                    username=username,
-                   user_pass=user_pass,
+                   user_pass = user_pass,
                    first_name=first_name,
                    last_name=last_name,
                    is_admin=is_admin)

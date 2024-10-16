@@ -8,3 +8,4 @@ def get_all_users():
     data = users_service.get_users()#response_model=List[schemas.User]
 
     return data
+

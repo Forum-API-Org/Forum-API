@@ -39,9 +39,11 @@ class User(BaseModel):
     is_admin: bool
 
     @classmethod
-    def from_query_result(cls, email, username, first_name, last_name, is_admin):
-        return cls(email=email,
+    def from_query_result(cls, id, email, username, user_pass, first_name, last_name, is_admin):
+        return cls(id=id,
+                   email=email,
                    username=username,
+                   user_pass=user_pass,
                    first_name=first_name,
                    last_name=last_name,
                    is_admin=is_admin)

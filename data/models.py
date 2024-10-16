@@ -30,13 +30,13 @@ class Reply(BaseModel):
 
 
 class User(BaseModel):
-    id: int | None
+    id: int | None = None
     email: str
     username: str
     user_pass: str
     first_name: str
     last_name: str
-    is_admin: bool
+    is_admin: bool | None = None
 
     @classmethod
     def from_query_result(cls, id, email, username, user_pass, first_name, last_name, is_admin):
@@ -68,3 +68,6 @@ class PrivateCatAccess(BaseModel):
     user_id: int
     access_type: int
 
+class LoginData(BaseModel):
+    username: str
+    password: str

@@ -1,8 +1,8 @@
 from data.models import User
-from data.database import read_query,update_query, insert_query
+from data.database import read_query, update_query, insert_query
 
 
-def get_users():
+def get_users():  # Internal to be deleted
 
     data = read_query('''select * from users''')
 

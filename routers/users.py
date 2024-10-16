@@ -19,4 +19,10 @@ def register_user(email: str, username: str, password: str, first_name: str, las
     #first and last name validations (containt only strings)
     user = users_service.create_user(email, username, password, first_name, last_name)
 
-    return user #or BadRequest(f'Username {username} is taken.')
+    return user or BadRequest(f'Username "{username}" is already taken.')
+
+@user_router.post('/login')
+def login_user(username: str, password: str):
+    user = users_service.login_user(username, password)
+
+    return user or BadRequest('Invalid username or password.')

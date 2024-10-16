@@ -42,17 +42,34 @@ class User(BaseModel):
     id: int | None = None
     email: str
     username: str
-    user_pass: str
+    password: str
     first_name: str
     last_name: str
-    is_admin: bool | None = None
+    is_admin: bool | None = 0
 
     @classmethod
-    def from_query_result(cls, id, email, username, user_pass, first_name, last_name, is_admin):
+    def from_query_result(cls, id, email, username, password, first_name, last_name, is_admin):
         return cls(id=id,
                    email=email,
                    username=username,
-                   user_pass = user_pass,
+                   password = password,
+                   first_name=first_name,
+                   last_name=last_name,
+                   is_admin=is_admin)
+    
+class UserResponse(BaseModel):
+    id: int | None = None
+    email: str
+    username: str
+    first_name: str
+    last_name: str
+    is_admin: bool | None = 0
+
+    @classmethod
+    def from_query_result(cls, id, email, username, first_name, last_name, is_admin):
+        return cls(id=id,
+                   email=email,
+                   username=username,
                    first_name=first_name,
                    last_name=last_name,
                    is_admin=is_admin)

@@ -1,5 +1,6 @@
 from datetime import date
 from pydantic import BaseModel, Field, constr
+from typing import Literal
 
 
 class Category(BaseModel):
@@ -86,11 +87,16 @@ class Message(BaseModel):
     message_date: date
     message_text: str
 
+vote_dict = {'upvote': 1, 'downvote': 0}
 
 class Vote(BaseModel):
     user_id: int
     reply_id: int
-    vote: bool
+    vote: Literal['upvote', 'downvote']
+
+    @property
+    def vote_value(self):
+        return vote_dict[self.vote]
 
     @classmethod
     def from_query_result(cls, user_id, reply_id, vote):

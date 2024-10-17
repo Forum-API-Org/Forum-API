@@ -8,7 +8,8 @@ def vote(vote: Vote):
         '''SELECT * FROM votes WHERE user_id = ? AND reply_id = ?''',
         (vote.user_id, vote.reply_id)
     )
-    if check[0][2] == vote.vote:
+    if check[0][2] == 1:
+        a = 3
         return f"The Vote is already {vote.vote}"
     
     if check:

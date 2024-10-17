@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from services import categories_service
-from common.responses import NotFound
+from common.responses import NotFound, BadRequest
 
 cat_router = APIRouter(prefix="/categories", tags=["Categories"])
 
@@ -33,7 +33,7 @@ def create_category(cat_name: str, creator_id: int):
 @cat_router.put('/lock/{id}')
 def lock_category(id: int):
     categories_service.lock(id)
-    return get_category_by_id(id)
+    return get_category_by_id(id) or BadRequest('Category is already locked.')
 
 
 @cat_router.put('/make_private/{id}')

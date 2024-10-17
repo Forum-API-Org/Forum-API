@@ -22,12 +22,12 @@ def create_user(email: str, username: str, password: str, first_name: str, last_
             (email, username, hashed_password, first_name, last_name))
 
         return User(id = generated_id, email = email, username = username, password = '', first_name = first_name, last_name = last_name)
-    except IntegrityError as e:
+    except IntegrityError:
 
         return None # може за всички валидации да се върне различно съобщение за грешка към BadRequest
     
 
-def login_user(username: str, password: str) -> UserResponse:
+def login_user(username: str, password: str):
     data = read_query('''select * from users where username = ?''', (username,))
     if not data:
         return None

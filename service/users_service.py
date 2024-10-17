@@ -3,8 +3,9 @@ from data.models import User, LoginData, UserResponse
 from data.database import read_query, update_query, insert_query
 import bcrypt
 from mariadb import IntegrityError
-# import PYjwt
-
+import jwt
+from dotenv import load_dotenv
+import os
 
 def get_users():  # Internal to be deleted
 
@@ -21,13 +22,24 @@ def create_user(email: str, username: str, password: str, first_name: str, last_
             (email, username, hashed_password, first_name, last_name))
 
         return User(id = generated_id, email = email, username = username, password = '', first_name = first_name, last_name = last_name)
-    except IntegrityError: 
+    except IntegrityError as e:
+        # if email in str(e):
+        #     return BadRequest(f'Incorrect email format.')
+        # if username in str(e):
+        #     return BadRequest(f'Username "{username}" is already taken.')
+        # if password in str(e):
+        #     return BadRequest(f'Incorrect password format.')
+        # if first_name in str(e):
+        #     return BadRequest(f'Incorrect name format.')
+        # if last_name in str(e):
+        #     return BadRequest(f'Incorrect name format.')
+
         # mariadb raises this error when a constraint is violated
         # in that case we have duplicate usernames
         return None # може за всички валидации да се върне различно съобщение за грешка към BadRequest
     
 
-def login_user(username: str, password: str) -> User:
+def login_user(username: str, password: str) -> UserResponse:
     data = read_query('''select * from users where username = ?''', (username,))
     if not data:
         return None
@@ -43,6 +55,11 @@ def login_user(username: str, password: str) -> User:
                             is_admin = user.is_admin)
     else:
         return None
-    
-# def create_token(data: dict):
-#     token = jwt.encode
+
+load_dotenv()
+secret_key = os.getenv('JWT_SECRET_KEY')
+# Now endpoint token/login ? 
+
+def create_token(data: dict):
+    token = jwt.encode(data, secret_key, algorithm='HS256')
+    return token

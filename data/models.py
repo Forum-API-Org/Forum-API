@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, constr
 
 
 class Category(BaseModel):
@@ -37,6 +37,10 @@ class Reply(BaseModel):
                    reply_text=reply_text
         )
 
+# TEmail = constr(regex=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+# TUsername = constr(regex=r'^[a-zA-Z0-9]+$')
+# TPassword = constr(min_length=8, max_length=20, regex=r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$')
+# TName = constr(regex=r'^[a-zA-Z]+$')
 
 class User(BaseModel):
     id: int | None = None

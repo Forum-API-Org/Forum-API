@@ -8,7 +8,9 @@ def vote(vote: Vote):
         'SELECT * FROM votes WHERE user_id = ? AND reply_id = ?',
         (vote.user_id, vote.reply_id)
     )
-
+    if check[0][2] == vote.vote:
+        return f"The Vote is already {vote.vote}"
+    
     if check:
         result = update_query(
             'UPDATE votes SET vote = ? WHERE user_id = ? AND reply_id = ? ',

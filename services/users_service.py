@@ -14,7 +14,7 @@ def get_users():  # Internal to be deleted
     return (User.from_query_result(*row) for row in data)
 
 
-def create_user(email: str, username: str, password: str, first_name: str, last_name: str ) -> User:
+def create_user(email: str, username: str, password: str, first_name: str, last_name: str ):
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     try:
         generated_id = insert_query(
@@ -23,19 +23,7 @@ def create_user(email: str, username: str, password: str, first_name: str, last_
 
         return User(id = generated_id, email = email, username = username, password = '', first_name = first_name, last_name = last_name)
     except IntegrityError as e:
-        # if email in str(e):
-        #     return BadRequest(f'Incorrect email format.')
-        # if username in str(e):
-        #     return BadRequest(f'Username "{username}" is already taken.')
-        # if password in str(e):
-        #     return BadRequest(f'Incorrect password format.')
-        # if first_name in str(e):
-        #     return BadRequest(f'Incorrect name format.')
-        # if last_name in str(e):
-        #     return BadRequest(f'Incorrect name format.')
 
-        # mariadb raises this error when a constraint is violated
-        # in that case we have duplicate usernames
         return None # може за всички валидации да се върне различно съобщение за грешка към BadRequest
     
 

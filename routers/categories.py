@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from service import categories_service
+from services import categories_service
 from common.responses import NotFound
 
 cat_router = APIRouter(prefix="/categories", tags=["Categories"])

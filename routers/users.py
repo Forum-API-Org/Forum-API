@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from service import users_service
+from services import users_service
 # from data.models import User
 from common.responses import BadRequest
 

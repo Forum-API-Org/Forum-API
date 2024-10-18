@@ -14,20 +14,20 @@ def view_topics(id: int):
     data = read_query('select * from topics where category_id = ?', (id,))
 
     return (Topic(id=id,
-                       top_name=top_name,
-                       category_id=category_id,
-                       user_id=user_id,
-                       topic_date=str(topic_date),  # date
-                       is_locked=is_locked,
-                       best_reply_id=best_reply_id)
-                 for id, top_name, category_id, user_id, topic_date, is_locked, best_reply_id in data)
+                  top_name=top_name,
+                  category_id=category_id,
+                  user_id=user_id,
+                  topic_date=str(topic_date),
+                  is_locked=is_locked,
+                  best_reply_id=best_reply_id)
+            for id, top_name, category_id, user_id, topic_date, is_locked, best_reply_id in data)
 
 
 def get_by_id(id: int):
     data = read_query('select * from categories where id = ?', (id,))
 
-    return next((Category(id=id, cat_name=cat_name, creator_id=creator_id, is_locked=is_locked, is_private=is_private)
-                 for id, cat_name, creator_id, is_locked, is_private in data), None)
+    return (Category(id=id, cat_name=cat_name, creator_id=creator_id, is_locked=is_locked, is_private=is_private)
+                 for id, cat_name, creator_id, is_locked, is_private in data)
 
 
 # def exists(id: int):
@@ -46,12 +46,12 @@ def create(cat_name, creator_id):
 
 def check_if_locked(id: int):
     data = read_query('select is_locked from categories where id = ?', (id,))
-    return bool(is_locked for _ in data for is_locked in _)
+    return bool(data[0][0])
 
 
 def check_if_private(id: int):
     data = read_query('select is_private from categories where id = ?', (id,))
-    return bool(is_private for is_private, in data)
+    return bool(data[0][0])
 
 
 def lock(id: int):

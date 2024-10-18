@@ -20,13 +20,15 @@ def get_topic_by_id(id: int):
     if topic is None:
         return NotFound()
     else:
-        return f'''{topic}
-                   {[f'{reply}\n' for reply in replies]}'''
+        return {
+            "topic": topic,
+            "replies": replies
+        }
 
 
 @topics_router.post('')
-def create_topic(category_id: int, user_id: int, top_name: str):
-    topic = topics_service.create(category_id, user_id, top_name)
+def create_topic(category_id: int, user_id: int, topic_name: str):
+    topic = topics_service.create(category_id, user_id, topic_name)
 
     return topic
 

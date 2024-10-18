@@ -4,12 +4,10 @@ from data.models import Reply
 
 replies_router = APIRouter(prefix = "/replies", tags = ["Replies"])
 
-@replies_router.post('/{topic_id}')
-def create_reply(reply: Reply ,topic_id: int):
 
-    #if user validation
+@replies_router.post('')
+def create_reply(topic_id: int, user_id: int, reply_text: str):
+    result = replies_service.create(topic_id, user_id, reply_text)
 
-    reply.topic_id = topic_id
-
-    return replies_service.create(reply)
+    return result
 

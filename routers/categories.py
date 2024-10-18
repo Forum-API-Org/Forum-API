@@ -15,7 +15,7 @@ def get_all_categories():
     return data
 
 
-@cat_router.get('/{id}', response_model=Category)
+@cat_router.get('/{id}')
 def get_category_by_id(id: int):
     category = categories_service.get_by_id(id)
     topics = categories_service.view_topics(id)
@@ -23,8 +23,10 @@ def get_category_by_id(id: int):
     if category is None:
         return NotFound()
     else:
-        return f'''{category}
-                   {topics}'''
+        return {
+            "category": category,
+            "topics": topics
+        }
 
 
 @cat_router.post('')

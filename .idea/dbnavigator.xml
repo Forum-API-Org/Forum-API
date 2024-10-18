@@ -17,16 +17,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="eaa034ab-14f8-4ff3-a3bb-9a17d8df80b3">
-      <console name="ForumDB" type="STANDARD" schema="forum_3" session="Main"><![CDATA[select
-    t.best_reply_id,
-    t.category_id,
-    t.id,
-    t.is_locked,
-    t.top_name,
-    t.topic_date,
-    t.user_id
-from
-    topics t;]]></console>
+      <console name="ForumDB" type="STANDARD" schema="forum_3" session="Main"><![CDATA[select * from votes;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">

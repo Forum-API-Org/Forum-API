@@ -16,18 +16,18 @@ class Topic(BaseModel):
     top_name: str
     category_id: int
     user_id: int
-    topic_date: date
+    topic_date: str  # date
     is_locked: bool
-    best_reply_id: int
+    best_reply_id: int | None = None
 
 
 class Reply(BaseModel):
     id: int | None
     topic_id: int
     user_id: int
-    reply_date: date
+    reply_date: str  # date
     reply_text: str
-    #replies_reply_id: int
+    replies_reply_id: int | None = None
 
     @classmethod
     def from_query_result(cls, id, topic_id, user_id, reply_date, reply_text):

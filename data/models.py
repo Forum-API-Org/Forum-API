@@ -87,12 +87,22 @@ class Message(BaseModel):
     message_date: date
     message_text: str
 
+    @classmethod
+    def from_query_result(cls, id, sender_id, receiver_id, message_date, message_text):
+        return cls(id=id,
+                   sender_id=sender_id,
+                   receiver_id=receiver_id,
+                   message_date=message_date,
+                   message_text=message_text)
+
+    
 vote_dict = {'upvote': 1, 'downvote': 0}
 
 class Vote(BaseModel):
     user_id: int
     reply_id: int
     vote: Literal['upvote', 'downvote']
+    
 
     @property
     def vote_value(self):

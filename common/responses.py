@@ -2,7 +2,7 @@ from fastapi import Response
 
 
 class BadRequest(Response):
-    def __init__(self, content=''):
+    def __init__(self, content: object = '') -> object:
         super().__init__(status_code=400, content=content)
 
 
@@ -14,6 +14,10 @@ class NotFound(Response):
 class Unauthorized(Response):
     def __init__(self, content=''):
         super().__init__(status_code=401, content=content)
+
+class Forbidden(Response):
+    def __init__(self, content=''):
+        super().__init__(status_code=403, content=content)
 
 
 class NoContent(Response):

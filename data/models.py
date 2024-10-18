@@ -41,7 +41,7 @@ class Reply(BaseModel):
 
 TEmail = constr(pattern=r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$')
 TUsername = constr(pattern=r'^[a-zA-Z0-9_.+-]+$')
-TPassword = constr(min_length=5, max_length=20, pattern=r'^[a-zA-Z0-9_.+-]+!$')
+TPassword = constr(min_length=5, max_length=20, pattern=r'^[a-zA-Z0-9_.+-]+$')
 TName = constr(pattern=r'^[a-zA-Z]+$')
 
 
@@ -69,21 +69,22 @@ class UserResponse(BaseModel):
     id: int | None = None
     email: str
     username: str
-    password: str
     first_name: str
     last_name: str
     is_admin: bool | None = 0
 
     @classmethod
-    def from_query_result(cls, id, email, username, password, first_name, last_name, is_admin):
+    def from_query_result(cls, id, email, username, first_name, last_name, is_admin):
         return cls(id=id,
                    email=email,
                    username=username,
-                   password=password,
                    first_name=first_name,
                    last_name=last_name,
                    is_admin=is_admin)
 
+#class logindata(BaseModel):
+
+#class registerdata(BaseModel):
 
 class Message(BaseModel):
     id: int | None

@@ -21,4 +21,3 @@ def create(topic_id, user_id, reply_text):
         (topic_id, user_id, reply_text))
     return get_reply_by_id(generated_id)
 
-

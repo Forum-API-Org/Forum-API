@@ -1371,7 +1371,7 @@
     </schema>
     <schema id="514" parent="1" name="forum_3">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-10-16.09:42:54</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-10-18.18:37:14</LastIntrospectionLocalTimestamp>
       <CollationName>latin1_swedish_ci</CollationName>
     </schema>
     <schema id="515" parent="1" name="information_schema">
@@ -1435,432 +1435,451 @@
       <Engine>InnoDB</Engine>
       <CollationName>latin1_swedish_ci</CollationName>
     </table>
-    <table id="534" parent="514" name="topics">
+    <table id="534" parent="514" name="tokens_blacklist">
       <Engine>InnoDB</Engine>
       <CollationName>latin1_swedish_ci</CollationName>
     </table>
-    <table id="535" parent="514" name="users">
+    <table id="535" parent="514" name="topics">
       <Engine>InnoDB</Engine>
       <CollationName>latin1_swedish_ci</CollationName>
     </table>
-    <table id="536" parent="514" name="votes">
+    <table id="536" parent="514" name="users">
       <Engine>InnoDB</Engine>
       <CollationName>latin1_swedish_ci</CollationName>
     </table>
-    <column id="537" parent="530" name="id">
-      <AutoIncrement>10</AutoIncrement>
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="538" parent="530" name="cat_name">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>varchar(45)|0s</StoredType>
-    </column>
-    <column id="539" parent="530" name="creator_id">
-      <NotNull>1</NotNull>
-      <Position>3</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="540" parent="530" name="is_locked">
-      <DefaultExpression>0</DefaultExpression>
-      <NotNull>1</NotNull>
-      <Position>4</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="541" parent="530" name="is_private">
-      <DefaultExpression>0</DefaultExpression>
-      <NotNull>1</NotNull>
-      <Position>5</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <foreign-key id="542" parent="530" name="fk_categories_users1">
-      <ColNames>creator_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>users</RefTableName>
-    </foreign-key>
-    <index id="543" parent="530" name="PRIMARY">
-      <ColNames>id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="544" parent="530" name="cat_name_UNIQUE">
-      <ColNames>cat_name</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="545" parent="530" name="fk_categories_users1_idx">
-      <ColNames>creator_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="546" parent="530" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <key id="547" parent="530" name="cat_name_UNIQUE">
-      <UnderlyingIndexName>cat_name_UNIQUE</UnderlyingIndexName>
-    </key>
-    <column id="548" parent="531" name="id">
-      <AutoIncrement>24</AutoIncrement>
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="549" parent="531" name="sender_id">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="550" parent="531" name="receiver_id">
-      <NotNull>1</NotNull>
-      <Position>3</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="551" parent="531" name="message_date">
-      <NotNull>1</NotNull>
-      <Position>4</Position>
-      <StoredType>datetime|0s</StoredType>
-    </column>
-    <column id="552" parent="531" name="message_text">
-      <NotNull>1</NotNull>
-      <Position>5</Position>
-      <StoredType>varchar(500)|0s</StoredType>
-    </column>
-    <foreign-key id="553" parent="531" name="fk_messages_users1">
-      <ColNames>sender_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>users</RefTableName>
-    </foreign-key>
-    <foreign-key id="554" parent="531" name="fk_messages_users2">
-      <ColNames>receiver_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>users</RefTableName>
-    </foreign-key>
-    <index id="555" parent="531" name="PRIMARY">
-      <ColNames>id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="556" parent="531" name="fk_messages_users1_idx">
-      <ColNames>sender_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="557" parent="531" name="fk_messages_users2_idx">
-      <ColNames>receiver_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="558" parent="531" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <column id="559" parent="532" name="category_id">
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="560" parent="532" name="user_id">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="561" parent="532" name="access_type">
-      <DefaultExpression>0</DefaultExpression>
-      <NotNull>1</NotNull>
-      <Position>3</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <foreign-key id="562" parent="532" name="fk_categories_has_users_categories1">
-      <ColNames>category_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>categories</RefTableName>
-    </foreign-key>
-    <foreign-key id="563" parent="532" name="fk_categories_has_users_users1">
-      <ColNames>user_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>users</RefTableName>
-    </foreign-key>
-    <index id="564" parent="532" name="PRIMARY">
-      <ColNames>category_id
-user_id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="565" parent="532" name="fk_categories_has_users_categories1_idx">
-      <ColNames>category_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="566" parent="532" name="fk_categories_has_users_users1_idx">
-      <ColNames>user_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="567" parent="532" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <column id="568" parent="533" name="id">
-      <AutoIncrement>14</AutoIncrement>
-      <NotNull>1</NotNull>
-      <Position>1</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="569" parent="533" name="topic_id">
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="570" parent="533" name="user_id">
-      <NotNull>1</NotNull>
-      <Position>3</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <column id="571" parent="533" name="reply_date">
-      <NotNull>1</NotNull>
-      <Position>4</Position>
-      <StoredType>datetime|0s</StoredType>
-    </column>
-    <column id="572" parent="533" name="reply_text">
-      <NotNull>1</NotNull>
-      <Position>5</Position>
-      <StoredType>varchar(200)|0s</StoredType>
-    </column>
-    <column id="573" parent="533" name="replies_reply_id">
-      <Position>6</Position>
-      <StoredType>int(11)|0s</StoredType>
-    </column>
-    <foreign-key id="574" parent="533" name="fk_replies_topics1">
-      <ColNames>topic_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>topics</RefTableName>
-    </foreign-key>
-    <foreign-key id="575" parent="533" name="fk_replies_users1">
-      <ColNames>user_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>users</RefTableName>
-    </foreign-key>
-    <foreign-key id="576" parent="533" name="fk_replies_replies1">
-      <ColNames>replies_reply_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>replies</RefTableName>
-    </foreign-key>
-    <index id="577" parent="533" name="PRIMARY">
-      <ColNames>id
-topic_id</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="578" parent="533" name="fk_replies_topics1_idx">
-      <ColNames>topic_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="579" parent="533" name="fk_replies_users1_idx">
-      <ColNames>user_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="580" parent="533" name="fk_replies_replies1_idx">
-      <ColNames>replies_reply_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="581" parent="533" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
-    </key>
-    <column id="582" parent="534" name="id">
+    <table id="537" parent="514" name="votes">
+      <Engine>InnoDB</Engine>
+      <CollationName>latin1_swedish_ci</CollationName>
+    </table>
+    <column id="538" parent="530" name="id">
       <AutoIncrement>15</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="583" parent="534" name="top_name">
+    <column id="539" parent="530" name="cat_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(45)|0s</StoredType>
     </column>
-    <column id="584" parent="534" name="category_id">
+    <column id="540" parent="530" name="creator_id">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="585" parent="534" name="user_id">
+    <column id="541" parent="530" name="is_locked">
+      <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="586" parent="534" name="topic_date">
-      <NotNull>1</NotNull>
-      <Position>5</Position>
-      <StoredType>datetime|0s</StoredType>
-    </column>
-    <column id="587" parent="534" name="is_locked">
+    <column id="542" parent="530" name="is_private">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
-      <Position>6</Position>
+      <Position>5</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="588" parent="534" name="best_reply_id">
-      <Position>7</Position>
+    <foreign-key id="543" parent="530" name="fk_categories_users1">
+      <ColNames>creator_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>users</RefTableName>
+    </foreign-key>
+    <index id="544" parent="530" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="545" parent="530" name="cat_name_UNIQUE">
+      <ColNames>cat_name</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="546" parent="530" name="fk_categories_users1_idx">
+      <ColNames>creator_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="547" parent="530" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="548" parent="530" name="cat_name_UNIQUE">
+      <UnderlyingIndexName>cat_name_UNIQUE</UnderlyingIndexName>
+    </key>
+    <column id="549" parent="531" name="id">
+      <AutoIncrement>24</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <foreign-key id="589" parent="534" name="fk_topics_categories">
+    <column id="550" parent="531" name="sender_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="551" parent="531" name="receiver_id">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="552" parent="531" name="message_date">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <column id="553" parent="531" name="message_text">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StoredType>varchar(500)|0s</StoredType>
+    </column>
+    <foreign-key id="554" parent="531" name="fk_messages_users1">
+      <ColNames>sender_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>users</RefTableName>
+    </foreign-key>
+    <foreign-key id="555" parent="531" name="fk_messages_users2">
+      <ColNames>receiver_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>users</RefTableName>
+    </foreign-key>
+    <index id="556" parent="531" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="557" parent="531" name="fk_messages_users1_idx">
+      <ColNames>sender_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="558" parent="531" name="fk_messages_users2_idx">
+      <ColNames>receiver_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="559" parent="531" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="560" parent="532" name="category_id">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="561" parent="532" name="user_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="562" parent="532" name="access_type">
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <foreign-key id="563" parent="532" name="fk_categories_has_users_categories1">
       <ColNames>category_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>categories</RefTableName>
     </foreign-key>
-    <foreign-key id="590" parent="534" name="fk_topics_users1">
+    <foreign-key id="564" parent="532" name="fk_categories_has_users_users1">
       <ColNames>user_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>users</RefTableName>
     </foreign-key>
-    <foreign-key id="591" parent="534" name="fk_topics_replies1">
-      <ColNames>best_reply_id</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>replies</RefTableName>
-    </foreign-key>
-    <index id="592" parent="534" name="PRIMARY">
-      <ColNames>id</ColNames>
+    <index id="565" parent="532" name="PRIMARY">
+      <ColNames>category_id
+user_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="593" parent="534" name="top_name_UNIQUE">
-      <ColNames>top_name</ColNames>
-      <Type>btree</Type>
-      <Unique>1</Unique>
-    </index>
-    <index id="594" parent="534" name="fk_topics_categories_idx">
+    <index id="566" parent="532" name="fk_categories_has_users_categories1_idx">
       <ColNames>category_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="595" parent="534" name="fk_topics_users1_idx">
+    <index id="567" parent="532" name="fk_categories_has_users_users1_idx">
       <ColNames>user_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="596" parent="534" name="fk_topics_replies1_idx">
-      <ColNames>best_reply_id</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="597" parent="534" name="PRIMARY">
+    <key id="568" parent="532" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="598" parent="534" name="top_name_UNIQUE">
-      <UnderlyingIndexName>top_name_UNIQUE</UnderlyingIndexName>
-    </key>
-    <column id="599" parent="535" name="id">
-      <AutoIncrement>22</AutoIncrement>
+    <column id="569" parent="533" name="id">
+      <AutoIncrement>15</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="600" parent="535" name="email">
+    <column id="570" parent="533" name="topic_id">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="571" parent="533" name="user_id">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="572" parent="533" name="reply_date">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <column id="573" parent="533" name="reply_text">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StoredType>varchar(200)|0s</StoredType>
+    </column>
+    <column id="574" parent="533" name="replies_reply_id">
+      <Position>6</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <foreign-key id="575" parent="533" name="fk_replies_topics1">
+      <ColNames>topic_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>topics</RefTableName>
+    </foreign-key>
+    <foreign-key id="576" parent="533" name="fk_replies_users1">
+      <ColNames>user_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>users</RefTableName>
+    </foreign-key>
+    <foreign-key id="577" parent="533" name="fk_replies_replies1">
+      <ColNames>replies_reply_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>replies</RefTableName>
+    </foreign-key>
+    <index id="578" parent="533" name="PRIMARY">
+      <ColNames>id
+topic_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="579" parent="533" name="fk_replies_topics1_idx">
+      <ColNames>topic_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="580" parent="533" name="fk_replies_users1_idx">
+      <ColNames>user_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="581" parent="533" name="fk_replies_replies1_idx">
+      <ColNames>replies_reply_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="582" parent="533" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="583" parent="534" name="token">
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>varchar(255)|0s</StoredType>
+    </column>
+    <index id="584" parent="534" name="PRIMARY">
+      <ColNames>token</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="585" parent="534" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="586" parent="535" name="id">
+      <AutoIncrement>15</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="587" parent="535" name="top_name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(45)|0s</StoredType>
     </column>
-    <column id="601" parent="535" name="username">
+    <column id="588" parent="535" name="category_id">
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="589" parent="535" name="user_id">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="590" parent="535" name="topic_date">
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StoredType>datetime|0s</StoredType>
+    </column>
+    <column id="591" parent="535" name="is_locked">
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="592" parent="535" name="best_reply_id">
+      <Position>7</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <foreign-key id="593" parent="535" name="fk_topics_categories">
+      <ColNames>category_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>categories</RefTableName>
+    </foreign-key>
+    <foreign-key id="594" parent="535" name="fk_topics_users1">
+      <ColNames>user_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>users</RefTableName>
+    </foreign-key>
+    <foreign-key id="595" parent="535" name="fk_topics_replies1">
+      <ColNames>best_reply_id</ColNames>
+      <RefColNames>id</RefColNames>
+      <RefTableName>replies</RefTableName>
+    </foreign-key>
+    <index id="596" parent="535" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="597" parent="535" name="top_name_UNIQUE">
+      <ColNames>top_name</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="598" parent="535" name="fk_topics_categories_idx">
+      <ColNames>category_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="599" parent="535" name="fk_topics_users1_idx">
+      <ColNames>user_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <index id="600" parent="535" name="fk_topics_replies1_idx">
+      <ColNames>best_reply_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="601" parent="535" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <key id="602" parent="535" name="top_name_UNIQUE">
+      <UnderlyingIndexName>top_name_UNIQUE</UnderlyingIndexName>
+    </key>
+    <column id="603" parent="536" name="id">
+      <AutoIncrement>27</AutoIncrement>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StoredType>int(11)|0s</StoredType>
+    </column>
+    <column id="604" parent="536" name="email">
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StoredType>varchar(45)|0s</StoredType>
+    </column>
+    <column id="605" parent="536" name="username">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>varchar(45)|0s</StoredType>
     </column>
-    <column id="602" parent="535" name="user_pass">
+    <column id="606" parent="536" name="user_pass">
       <NotNull>1</NotNull>
       <Position>4</Position>
-      <StoredType>varchar(100)|0s</StoredType>
+      <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="603" parent="535" name="first_name">
+    <column id="607" parent="536" name="first_name">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>varchar(45)|0s</StoredType>
     </column>
-    <column id="604" parent="535" name="last_name">
+    <column id="608" parent="536" name="last_name">
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>varchar(45)|0s</StoredType>
     </column>
-    <column id="605" parent="535" name="is_admin">
+    <column id="609" parent="536" name="is_admin">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <index id="606" parent="535" name="PRIMARY">
+    <index id="610" parent="536" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="607" parent="535" name="user_id_UNIQUE">
+    <index id="611" parent="536" name="user_id_UNIQUE">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="608" parent="535" name="email_UNIQUE">
+    <index id="612" parent="536" name="email_UNIQUE">
       <ColNames>email</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="609" parent="535" name="username_UNIQUE">
+    <index id="613" parent="536" name="username_UNIQUE">
       <ColNames>username</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="610" parent="535" name="PRIMARY">
+    <key id="614" parent="536" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="611" parent="535" name="user_id_UNIQUE">
+    <key id="615" parent="536" name="user_id_UNIQUE">
       <UnderlyingIndexName>user_id_UNIQUE</UnderlyingIndexName>
     </key>
-    <key id="612" parent="535" name="email_UNIQUE">
+    <key id="616" parent="536" name="email_UNIQUE">
       <UnderlyingIndexName>email_UNIQUE</UnderlyingIndexName>
     </key>
-    <key id="613" parent="535" name="username_UNIQUE">
+    <key id="617" parent="536" name="username_UNIQUE">
       <UnderlyingIndexName>username_UNIQUE</UnderlyingIndexName>
     </key>
-    <column id="614" parent="536" name="user_id">
+    <column id="618" parent="537" name="user_id">
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="615" parent="536" name="reply_id">
+    <column id="619" parent="537" name="reply_id">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <column id="616" parent="536" name="vote">
+    <column id="620" parent="537" name="vote">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>int(11)|0s</StoredType>
     </column>
-    <foreign-key id="617" parent="536" name="fk_users_has_replies_users1">
+    <foreign-key id="621" parent="537" name="fk_users_has_replies_users1">
       <ColNames>user_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>users</RefTableName>
     </foreign-key>
-    <foreign-key id="618" parent="536" name="fk_users_has_replies_replies1">
+    <foreign-key id="622" parent="537" name="fk_users_has_replies_replies1">
       <ColNames>reply_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>replies</RefTableName>
     </foreign-key>
-    <index id="619" parent="536" name="PRIMARY">
+    <index id="623" parent="537" name="PRIMARY">
       <ColNames>user_id
 reply_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="620" parent="536" name="fk_users_has_replies_users1_idx">
+    <index id="624" parent="537" name="fk_users_has_replies_users1_idx">
       <ColNames>user_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="621" parent="536" name="fk_users_has_replies_replies1_idx">
+    <index id="625" parent="537" name="fk_users_has_replies_replies1_idx">
       <ColNames>reply_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="622" parent="536" name="PRIMARY">
+    <key id="626" parent="537" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Body
+from typing import Annotated
+
+from fastapi import APIRouter, Header
 from starlette import status
 
 from services import users_service
@@ -6,16 +8,16 @@ from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName
 from common.responses import BadRequest
 
 user_router = APIRouter(prefix = '/users', tags = ['Users'])
-@user_router.get('')
-def get_all_users():
+@user_router.get('', response_model= list[UserResponse])
+def get_all_users(token: Annotated[str, Header()]):
 
     data = users_service.get_users()#response_model=List[schemas.User]
 
     return data
 
 @user_router.post('/', response_model=User,
-                  response_model_exclude={'password', 'is_admin'},
-                  status_code=201)
+                  response_model_exclude={'password', 'is_admin'})
+                  # status_code=status.HTTP_201_CREATED)
 def register_user(email: TEmail,
                   username: TUsername,
                   password: TPassword,
@@ -28,6 +30,14 @@ def register_user(email: TEmail,
 
 @user_router.post('/login')
 def login_user(username: str, password: str):
-    user = users_service.login_user(username, password)
 
-    return user or BadRequest('Invalid username or password.')
+    user_token = users_service.login_user(username, password)
+
+    return user_token or BadRequest('Invalid username or password.')
+
+@user_router.post('/logout')
+def logout_user(token: Annotated[str, Header()]):
+
+    users_service.blacklist_user(token)
+
+    return f'User successfully logged out.'

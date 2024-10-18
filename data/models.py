@@ -27,6 +27,7 @@ class Reply(BaseModel):
     user_id: int
     reply_date: date
     reply_text: str
+
     #replies_reply_id: int
 
     @classmethod
@@ -36,14 +37,36 @@ class Reply(BaseModel):
                    user_id=user_id,
                    reply_date=reply_date,
                    reply_text=reply_text
-        )
+                   )
 
-# TEmail = constr(regex=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
-# TUsername = constr(regex=r'^[a-zA-Z0-9]+$')
-# TPassword = constr(min_length=8, max_length=20, regex=r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$')
-# TName = constr(regex=r'^[a-zA-Z]+$')
+
+TEmail = constr(pattern=r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$')
+TUsername = constr(pattern=r'^[a-zA-Z0-9_.+-]+$')
+TPassword = constr(min_length=5, max_length=20, pattern=r'^[a-zA-Z0-9_.+-]+!$')
+TName = constr(pattern=r'^[a-zA-Z]+$')
+
 
 class User(BaseModel):
+    id: int | None = None
+    email: TEmail
+    username: TUsername
+    password: TPassword
+    first_name: TName
+    last_name: TName
+    is_admin: bool | None = 0
+
+    @classmethod
+    def from_query_result(cls, id, email, username, password, first_name, last_name, is_admin):
+        return cls(id=id,
+                   email=email,
+                   username=username,
+                   password=password,
+                   first_name=first_name,
+                   last_name=last_name,
+                   is_admin=is_admin)
+
+
+class UserResponse(BaseModel):
     id: int | None = None
     email: str
     username: str
@@ -57,24 +80,7 @@ class User(BaseModel):
         return cls(id=id,
                    email=email,
                    username=username,
-                   password = password,
-                   first_name=first_name,
-                   last_name=last_name,
-                   is_admin=is_admin)
-    
-class UserResponse(BaseModel):
-    id: int | None = None
-    email: str
-    username: str
-    first_name: str
-    last_name: str
-    is_admin: bool | None = 0
-
-    @classmethod
-    def from_query_result(cls, id, email, username, first_name, last_name, is_admin):
-        return cls(id=id,
-                   email=email,
-                   username=username,
+                   password=password,
                    first_name=first_name,
                    last_name=last_name,
                    is_admin=is_admin)
@@ -87,7 +93,9 @@ class Message(BaseModel):
     message_date: date
     message_text: str
 
+
 vote_dict = {'upvote': 1, 'downvote': 0}
+
 
 class Vote(BaseModel):
     user_id: int
@@ -103,13 +111,14 @@ class Vote(BaseModel):
         return cls(user_id=user_id,
                    reply_id=reply_id,
                    vote=vote
-        )
+                   )
 
 
 class PrivateCatAccess(BaseModel):
     category_id: int
     user_id: int
     access_type: int
+
 
 class LoginData(BaseModel):
     username: str

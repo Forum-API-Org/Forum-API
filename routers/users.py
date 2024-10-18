@@ -1,6 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
+from starlette import status
+
 from services import users_service
-# from data.models import User
+from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName
 from common.responses import BadRequest
 
 user_router = APIRouter(prefix = '/users', tags = ['Users'])
@@ -11,15 +13,18 @@ def get_all_users():
 
     return data
 
-@user_router.post('/register')
-def register_user(email: str, username: str, password: str, first_name: str, last_name: str):
-    #if email validation
-    #if username validation
-    # decide if password validation
-    #first and last name validations (containt only strings)
+@user_router.post('/', response_model=User,
+                  response_model_exclude={'password', 'is_admin'},
+                  status_code=201)
+def register_user(email: TEmail,
+                  username: TUsername,
+                  password: TPassword,
+                  first_name: TName,
+                  last_name: TName):
+
     user = users_service.create_user(email, username, password, first_name, last_name)
 
-    return user or BadRequest(f'Username "{username}" is already taken.')
+    return user or BadRequest(f'Username "{username}" and or email "{email}" is already taken.')
 
 @user_router.post('/login')
 def login_user(username: str, password: str):

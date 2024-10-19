@@ -1,7 +1,6 @@
 from data.models import Reply
 from data.database import insert_query, read_query
 from data.models import Reply
-from datetime import datetime
 
 
 def get_reply_by_id(id: int):

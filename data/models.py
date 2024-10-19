@@ -20,6 +20,8 @@ class Topic(BaseModel):
     is_locked: bool
     best_reply_id: int | None = None
 
+class ReplyText(BaseModel):
+    text: str
 
 class Reply(BaseModel):
     id: int | None
@@ -85,6 +87,9 @@ class UserResponse(BaseModel):
                    is_admin=is_admin)
 
 
+class MessageText(BaseModel):
+    text: str
+
 class Message(BaseModel):
     id: int | None
     sender_id: int
@@ -104,15 +109,22 @@ class Message(BaseModel):
 vote_dict = {'upvote': 1, 'downvote': 0}
 
 
-class Vote(BaseModel):
-    user_id: int
-    reply_id: int
+class VoteResult(BaseModel):
     vote: Literal['upvote', 'downvote']
-
-
+    
     @property
     def vote_value(self):
         return vote_dict[self.vote]
+
+# class Vote(BaseModel):
+#     user_id: int
+#     reply_id: int
+#     vote: Literal['upvote', 'downvote']
+
+
+#     @property
+#     def vote_value(self):
+#         return vote_dict[self.vote]
 
     @classmethod
     def from_query_result(cls, user_id, reply_id, vote):

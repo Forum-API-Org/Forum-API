@@ -5,15 +5,15 @@ from starlette import status
 
 from services import users_service
 from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName
-from common.responses import BadRequest
+from common.responses import BadRequest, Forbidden
 
 user_router = APIRouter(prefix = '/users', tags = ['Users'])
 @user_router.get('', response_model= list[UserResponse])
 def get_all_users(token: Annotated[str, Header()]):
 
-    data = users_service.get_users()#response_model=List[schemas.User]
+    data = users_service.get_users(token)#response_model=List[schemas.User]
 
-    return data
+    return data or Forbidden('You do not have access or your token is invalid!')
 
 @user_router.post('/', response_model=User,
                   response_model_exclude={'password', 'is_admin'})
@@ -38,6 +38,6 @@ def login_user(username: str, password: str):
 @user_router.post('/logout')
 def logout_user(token: Annotated[str, Header()]):
 
-    users_service.blacklist_user(token)
+    result = users_service.blacklist_user(token)
 
-    return f'User successfully logged out.'
+    return result or BadRequest('Invalid token.')

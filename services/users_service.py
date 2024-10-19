@@ -1,3 +1,6 @@
+from http.client import HTTPException
+from logging import raiseExceptions
+
 from common.responses import BadRequest, Unauthorized, Forbidden
 from data.models import User, LoginData, UserResponse
 from data.database import read_query, update_query, insert_query
@@ -7,11 +10,21 @@ import jwt
 from dotenv import load_dotenv
 import os
 
-def get_users():  # Internal to be deleted
+def get_users(token):  # Internal to be deleted
 
-    data = read_query('''select id, email, username, first_name, last_name, is_admin from users''')
+    user = authorise_user(token)
 
-    return (UserResponse.from_query_result(*row) for row in data)
+    if user:
+
+        if user['is_admin'] == 1:
+
+            data = read_query('''select id, email, username, first_name, last_name, is_admin from users''')
+
+            return (UserResponse.from_query_result(*row) for row in data)
+        else:
+            return False
+    else:
+        return False
 
 # def get_user(username: str):
 #
@@ -63,22 +76,38 @@ def login_user(username: str, password: str):
         #                     last_name = user.last_name,
         #                     is_admin = user.is_admin)
 
+# def check_blacklisted_tokens(token: str):
+#
+#     the_blacklist = read_query('''select * from tokens_blacklist where token = ?;''', (token,))
+#
+#     if len(the_blacklist) > 0:
+#         # return Forbidden('Token is blacklisted!')
+#         return True
+#     else:
+#         return False
+
 
 
 def authorise_user(token: str):
 
     the_blacklist = read_query('''select * from tokens_blacklist where token = ?;''', (token,))
 
-    if not the_blacklist:
+    if not len(the_blacklist) > 0:
         return jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])
-
-    return Forbidden('You do not have access or your token is invalid!')
+    return False
+    # return Forbidden('You do not have access or your token is invalid!')
 
 load_dotenv()
 secret_key = os.getenv('JWT_SECRET_KEY')
 
 def blacklist_user(token: str):
 
-    insert_query('''insert into tokens_blacklist (token) values '?';''', (token,))
+    authorised_user = authorise_user(token)
 
-    # return f'User successfully logged out.'
+    if authorised_user:
+
+        insert_query('''insert into tokens_blacklist (tokens_blacklist.token) values (?);''', (token,))
+
+        return f'User successfully logged out.'
+    else:
+        return False

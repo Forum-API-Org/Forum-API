@@ -1371,7 +1371,7 @@
     </schema>
     <schema id="514" parent="1" name="forum_3">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-10-18.18:37:14</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-10-19.12:42:14</LastIntrospectionLocalTimestamp>
       <CollationName>latin1_swedish_ci</CollationName>
     </schema>
     <schema id="515" parent="1" name="information_schema">
@@ -1770,7 +1770,7 @@ topic_id</ColNames>
       <UnderlyingIndexName>top_name_UNIQUE</UnderlyingIndexName>
     </key>
     <column id="603" parent="536" name="id">
-      <AutoIncrement>27</AutoIncrement>
+      <AutoIncrement>29</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int(11)|0s</StoredType>

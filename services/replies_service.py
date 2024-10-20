@@ -18,13 +18,21 @@ def get_reply_by_id(id: int, token):
                 for id, topic_id, user_id, reply_date, reply_text, replies_reply_id in data)
 
 
-def create(topic_id, user_id, reply_text, token):
+def create(topic_id, reply_text, token):
 
     user = authorise_user(token)
     if user:
         generated_id = insert_query(
             '''INSERT INTO replies(topic_id, user_id, reply_date, reply_text) VALUES (?, ?, now(), ?)''',
-            (topic_id, user_id, reply_text))
+            (topic_id, user['user_id'], reply_text))
         return get_reply_by_id(generated_id, token)
+    
+    return False
 
+def reply_exists(reply_id):
 
+    result = read_query(
+        '''SELECT id FROM replies WHERE id = ?''', (reply_id,)
+    )
+
+    return result

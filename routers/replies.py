@@ -8,7 +8,7 @@ replies_router = APIRouter(prefix = "/replies", tags = ["Replies"])
 
 
 @replies_router.post('/{user_id}/{topic_id}')
-def create_reply(topic_id: int, user_id: int, reply_text: ReplyText, token: Annotated[str, Header()]):
+def create_reply(user_id: int, topic_id: int, reply_text: ReplyText, token: Annotated[str, Header()]):
 
     #if user
 

@@ -5,15 +5,18 @@ from starlette import status
 
 from services import users_service
 from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName
-from common.responses import BadRequest, Forbidden
+from common.responses import BadRequest, Forbidden, Unauthorized
 
 user_router = APIRouter(prefix = '/users', tags = ['Users'])
 @user_router.get('', response_model= list[UserResponse])
 def get_all_users(token: Annotated[str, Header()]):
+    user_data = users_service.authenticate_user(token)
 
-    data = users_service.get_users(token)#response_model=List[schemas.User]
+    if users_service.is_admin(user_data['is_admin']):
+        data = users_service.get_users(token)#response_model=List[schemas.User]
+        return data
 
-    return data or Forbidden('You do not have access or your token is invalid!')
+    return Forbidden('Only admins can access this endpoint')
 
 @user_router.post('/', response_model=User,
                   response_model_exclude={'password', 'is_admin'})
@@ -30,14 +33,17 @@ def register_user(email: TEmail,
 
 @user_router.post('/login')
 def login_user(username: str, password: str):
+    user_data = users_service.login_user(username, password)
 
-    user_token = users_service.login_user(username, password)
-
-    return user_token or BadRequest('Invalid username or password.')
+    if user_data:
+        token = users_service.create_token(user_data)
+        return {'token': token}
+    else:
+        return Unauthorized('Invalid username or password!')
 
 @user_router.post('/logout')
 def logout_user(token: Annotated[str, Header()]):
 
     result = users_service.blacklist_user(token)
 
-    return result or BadRequest('Invalid token.')
+    return result or BadRequest('Invalid token!')

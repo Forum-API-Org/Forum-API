@@ -1,11 +1,11 @@
 from data.models import VoteResult
 from data.database import  update_query, read_query, insert_query
-from services.users_service import authorise_user
+from services.users_service import authenticate_user
 
 
 def vote(reply_id, vote: VoteResult, token):
 
-    user = authorise_user(token)
+    user = authenticate_user(token)
     if user:
         check = read_query(
             '''SELECT * FROM votes WHERE user_id = ? AND reply_id = ?''',

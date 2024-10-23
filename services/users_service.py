@@ -37,15 +37,17 @@ def create_user(email: str, username: str, password: str, first_name: str, last_
     
 
 def login_user(username: str, password: str):
+    try:
+        user_data = read_query('''SELECT id, username, user_pass, is_admin FROM users WHERE username = ?;''', (username,))
 
-    user_data = read_query('''SELECT id, username, user_pass, is_admin FROM users WHERE username = ?;''', (username,))
+        hashed_pass_db = user_data[0][2]
 
-    hashed_pass_db = user_data[0][2]
-
-    if user_data and bcrypt.checkpw(password.encode('utf-8'), hashed_pass_db.encode('utf-8')):
-        return user_data
-    else:
-        return None #Unauthorized('Incorrect username or password!')
+        if user_data and bcrypt.checkpw(password.encode('utf-8'), hashed_pass_db.encode('utf-8')):
+            return user_data
+        else:
+            raise None #HTTPException(status_code=401, detail='Incorrect login data!')
+    except IndexError as e:
+        raise HTTPException(status_code=401, detail='Incorrect login data!')
 
 def create_token(user_data):
     payload = {'user_id': user_data[0][0],

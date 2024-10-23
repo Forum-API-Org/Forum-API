@@ -42,7 +42,7 @@ def view_conversation(receiver_id: int, token: Annotated[str, Header()]):
         return NotFound(content="No conversation found")
 
     return {
-        "conversation": [r.message_text for r in result],
+        "conversation": [(r.sender_id, r.message_text) for r in result],
         "message_count": len(result)
     }
 

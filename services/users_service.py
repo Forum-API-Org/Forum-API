@@ -86,6 +86,10 @@ def user_exists(user_data):
     return any(read_query('''SELECT * from users where id = ? and username = ?''',
                           (user_data['user_id'], user_data['username'] )))
 
+def get_user_by_id(id: int):
+    return any(read_query('''SELECT * from users where id = ? ''',
+                          (id,)))
+
 load_dotenv()
 secret_key = os.getenv('JWT_SECRET_KEY')
 

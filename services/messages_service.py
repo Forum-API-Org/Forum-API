@@ -27,26 +27,32 @@ def all_messages(receiver_id: int, token):
             ''' SELECT * 
                 FROM messages 
                 WHERE (sender_id = ? or sender_id = ?)
-                AND (receiver_id = ? or receiver_id = ?);
+                AND (receiver_id = ? or receiver_id = ?)
                 ORDER BY message_date ASC''',
             (user['user_id'], receiver_id, user['user_id'], receiver_id)
         )
-        return [Message.from_query_result(*row) for row in messages]
+
+        data = [Message.from_query_result(*row) for row in messages]
+
+        return data
 
 def all_conversations(token):
 
     user = authenticate_user(token)
 
+    user_id = user['user_id']
 
     if user:
         conversations = read_query('''
-            SELECT DISTINCT u.id, u.email, u.username, u.first_name, u.last_name
+            SELECT DISTINCT u.id, u.email, u.username, u.first_name, u.last_name, u.is_admin
             FROM messages m
             JOIN users u ON (u.id = m.sender_id OR u.id = m.receiver_id)
             WHERE (m.sender_id = ? OR m.receiver_id = ?)
             AND u.id != ?
         ''', 
-        (user['user_id'], user['user_id'], user['user_id']))
+        (user_id, user_id, user_id))
+
+        а=3
 
         return [UserResponse.from_query_result(*row) for row in conversations]
 

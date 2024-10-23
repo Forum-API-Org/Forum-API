@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 from pydantic import BaseModel, Field, constr
 from typing import Literal
 
@@ -39,6 +39,9 @@ class Reply(BaseModel):
                    reply_date=reply_date,
                    reply_text=reply_text
                    )
+    
+    def __str__(self):
+        return self.reply_text
 
 
 TEmail = constr(pattern=r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$')
@@ -95,7 +98,7 @@ class Message(BaseModel):
     id: int | None
     sender_id: int
     receiver_id: int
-    message_date: date
+    message_date: datetime
     message_text: str
 
     @classmethod

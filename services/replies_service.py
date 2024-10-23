@@ -1,12 +1,12 @@
 from data.models import Reply
 from data.database import insert_query, read_query
 from data.models import Reply
-from services.users_service import authorise_user
+from services.users_service import authenticate_user
 
 
 def get_reply_by_id(id: int, token):
 
-    user = authorise_user(token)
+    user = authenticate_user(token)
     if user:
         data = read_query('''select * from replies where id = ?''', (id,))
         return (Reply(id=id,
@@ -20,7 +20,7 @@ def get_reply_by_id(id: int, token):
 
 def create(topic_id, reply_text, token):
 
-    user = authorise_user(token)
+    user = authenticate_user(token)
     if user:
         generated_id = insert_query(
             '''INSERT INTO replies(topic_id, user_id, reply_date, reply_text) VALUES (?, ?, now(), ?)''',

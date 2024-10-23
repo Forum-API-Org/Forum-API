@@ -1,11 +1,11 @@
 from data.models import Message, MessageText, UserResponse
 from data.database import insert_query, read_query
-from services.users_service import authorise_user
+from services.users_service import authenticate_user
 
 
 def create(receiver_id, msg: MessageText, token):
 
-    user = authorise_user(token)
+    user = authenticate_user(token)
     if user:
         
         receiver_exists = read_query('SELECT id FROM users WHERE id = ?', (receiver_id,))
@@ -21,7 +21,7 @@ def create(receiver_id, msg: MessageText, token):
 
 def all_messages(receiver_id: int, token):
 
-    user = authorise_user(token)
+    user = authenticate_user(token)
     if user:
         messages = read_query(
             ''' SELECT * 
@@ -35,7 +35,7 @@ def all_messages(receiver_id: int, token):
 
 def all_conversations(token):
 
-    user = authorise_user(token)
+    user = authenticate_user(token)
 
 
     if user:

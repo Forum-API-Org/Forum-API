@@ -33,7 +33,9 @@ def view_conversation(receiver_id: int, token: Annotated[str, Header()]):
         "message_count": len(result)
     }
 
-@message_router.get('/{user_id}')
+@message_router.get('/')
 def view_conversations(token: Annotated[str, Header()]):
 
-    return messages_service.all_conversations(token)
+    data = messages_service.all_conversations(token)
+
+    return data

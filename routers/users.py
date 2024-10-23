@@ -51,7 +51,7 @@ def logout_user(token: Annotated[str, Header()]):
 
     return result or BadRequest('Invalid token!')
 
-@user_router.put('/category_id')
+@user_router.put('/read_access')
 def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
     #check_category_id_exists(category_id)
     user_data = users_service.authenticate_user(token)
@@ -62,3 +62,24 @@ def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated
 
     return Forbidden('Only admins can access this endpoint')
 
+@user_router.put('/write_access')
+def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
+    #check_category_id_exists(category_id)
+    user_data = users_service.authenticate_user(token)
+
+    if users_service.is_admin(user_data['is_admin']):
+        data = users_service.give_user_w_access(user_category_id.user_id, user_category_id.category_id)#response_model=List[schemas.User]
+        return data or BadRequest(f'User with id {user_category_id.user_id} already has write access for category with id {user_category_id.category_id}!')
+
+    return Forbidden('Only admins can access this endpoint')
+
+@user_router.delete('/revoke_access')
+def revoke_user_access(token: Annotated[str, Header()], user_category_id: UserCategoryAccess):
+        #check_category_id_exists(category_id)
+    user_data = users_service.authenticate_user(token)
+
+    if users_service.is_admin(user_data['is_admin']):
+        data = users_service.revoke_access(user_category_id.user_id, user_category_id.category_id)#response_model=List[schemas.User]
+        return data or BadRequest(f'User with id {user_category_id.user_id} has no existing access for category with id {user_category_id.category_id}!')
+
+    return Forbidden('Only admins can access this endpoint')

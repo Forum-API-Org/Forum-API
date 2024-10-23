@@ -64,7 +64,7 @@ def decode_token(token):
         raise HTTPException(status_code=401, detail='Invalid token')
 
 def is_admin(num: int) -> bool:
-    return True if num == 1 else False
+    return bool(num)
 
 def authenticate_user(token: str):
 

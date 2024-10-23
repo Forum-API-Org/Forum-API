@@ -75,6 +75,10 @@ class LoginData(BaseModel):
     username: str
     password: str
 
+class UserCategoryAccess(BaseModel):
+    user_id: int
+    category_id: int
+
 class UserResponse(BaseModel):
     id: int | None = None
     email: str

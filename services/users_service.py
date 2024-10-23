@@ -4,7 +4,7 @@ from logging import raiseExceptions
 from starlette.responses import JSONResponse
 
 from common.responses import BadRequest, Unauthorized, Forbidden
-from data.models import User, LoginData, UserResponse
+from data.models import User, LoginData, UserResponse, UserCategoryAccess
 from data.database import read_query, update_query, insert_query
 import bcrypt
 from mariadb import IntegrityError
@@ -106,6 +106,21 @@ def blacklist_user(token: str):
         return f'User successfully logged out.'
     else:
         return False
+
+def give_user_r_access(user_id, category_id):
+
+
+    if any(read_query('''select user_id, category_id, access_type from private_cat_access
+                             where user_id = ? and category_id = ? and access_type = 0''',
+                   (user_id, category_id))):
+        return None
+
+    insert_query('''insert into private_cat_access (private_cat_access.user_id, private_cat_access.category_id, private_cat_access.access_type) 
+                        values(?,?, 0)''',
+                 (user_id, category_id))
+
+    return f'Read access for category with id {category_id} has been given to user with id {user_id}.'
+
 
 # def get_user(username: str):
 #

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Header
 
 
 from services import users_service
-from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName, LoginData
+from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName, LoginData, UserCategoryAccess
 from common.responses import BadRequest, Forbidden, Unauthorized
 
 user_router = APIRouter(prefix='/users', tags=['Users'])
@@ -50,3 +50,15 @@ def logout_user(token: Annotated[str, Header()]):
     result = users_service.blacklist_user(token)
 
     return result or BadRequest('Invalid token!')
+
+@user_router.put('/category_id')
+def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
+    #check_category_id_exists(category_id)
+    user_data = users_service.authenticate_user(token)
+
+    if users_service.is_admin(user_data['is_admin']):
+        data = users_service.give_user_r_access(user_category_id.user_id, user_category_id.category_id)#response_model=List[schemas.User]
+        return data or BadRequest(f'User with id {user_category_id.user_id} already has read access for category with id {user_category_id.category_id}!')
+
+    return Forbidden('Only admins can access this endpoint')
+

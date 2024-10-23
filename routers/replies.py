@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
-from common.responses import BadRequest, Unauthorized
-from services import replies_service
+from common.responses import BadRequest, Unauthorized, NotFound
+from services import replies_service, topics_service
 from data.models import ReplyText
 from typing import Annotated
 
@@ -11,6 +11,10 @@ replies_router = APIRouter(prefix = "/replies", tags = ["Replies"])
 def create_reply(topic_id: int, reply_text: ReplyText, token: Annotated[str, Header()]):
 
     #if user
+
+    topic = topics_service.get_by_id(topic_id)
+    if not topic:
+        return NotFound(content="Topic not found.")
 
     if not reply_text.text.strip():
         return BadRequest(content="Reply text cannot be empty.")

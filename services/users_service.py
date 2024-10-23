@@ -90,38 +90,47 @@ def login_user(username: str, password: str):
 
 
 
+# def authorise_user(token: str):
+
+#     # Check if token is in the blacklist
+#     the_blacklist = read_query('''SELECT * FROM tokens_blacklist WHERE token = ?;''', (token,))
+
+#     if the_blacklist:
+#         # Token is in blacklist, raise Unauthorized exception
+#         raise HTTPException(status_code=401, detail="Token is blacklisted")
+
+#     try:
+#         # Attempt to decode the JWT
+#         return jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])
+#     except jwt.ExpiredSignatureError:
+#         # Token has expired
+#         raise HTTPException(status_code=401, detail="Token has expired")
+#     except jwt.InvalidTokenError:
+#         # Token is invalid (signature or format error)
+#         raise HTTPException(status_code=401, detail="Invalid token")
+#     # except jwt.PyJWTError:
+#     #     raise HTTPException(status_code=401, detail='Invalid token')
+#     # the_blacklist = read_query('''select * from tokens_blacklist where token = ?;''', (token,))
+#     #
+#     # if not len(the_blacklist) > 0:
+#     #     try:
+#     #         return jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])
+#     #     except jwt.InvalidSignatureError as e:
+#     #         raise HTTPException(status_code = 401)
+#     # return False
+#     # return Forbidden('You do not have access or your token is invalid!')
+
+# load_dotenv()
+# secret_key = os.getenv('JWT_SECRET_KEY')
+
 def authorise_user(token: str):
 
-    # Check if token is in the blacklist
-    the_blacklist = read_query('''SELECT * FROM tokens_blacklist WHERE token = ?;''', (token,))
+    the_blacklist = read_query('''select * from tokens_blacklist where token = ?;''', (token,))
 
-    if the_blacklist:
-        # Token is in blacklist, raise Unauthorized exception
-        raise HTTPException(status_code=401, detail="Token is blacklisted")
-
-    try:
-        # Attempt to decode the JWT
+    if not the_blacklist:
         return jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        # Token has expired
-        raise HTTPException(status_code=401, detail="Token has expired")
-    except jwt.InvalidTokenError:
-        # Token is invalid (signature or format error)
-        raise HTTPException(status_code=401, detail="Invalid token")
-    # except jwt.PyJWTError:
-    #     raise HTTPException(status_code=401, detail='Invalid token')
-    # the_blacklist = read_query('''select * from tokens_blacklist where token = ?;''', (token,))
-    #
-    # if not len(the_blacklist) > 0:
-    #     try:
-    #         return jwt.decode(token, os.getenv('JWT_SECRET_KEY'), algorithms=['HS256'])
-    #     except jwt.InvalidSignatureError as e:
-    #         raise HTTPException(status_code = 401)
-    # return False
-    # return Forbidden('You do not have access or your token is invalid!')
 
-load_dotenv()
-secret_key = os.getenv('JWT_SECRET_KEY')
+    return Forbidden('You do not have access or your token is invalid!')
 
 def blacklist_user(token: str):
 

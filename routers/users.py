@@ -1,14 +1,16 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Header
-from starlette import status
+
 
 from services import users_service
 from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName
 from common.responses import BadRequest, Forbidden, Unauthorized
 
-user_router = APIRouter(prefix = '/users', tags = ['Users'])
-@user_router.get('', response_model= list[UserResponse])
+user_router = APIRouter(prefix='/users', tags=['Users'])
+
+
+@user_router.get('/', response_model=list[UserResponse])
 def get_all_users(token: Annotated[str, Header()]):
     user_data = users_service.authenticate_user(token)
 
@@ -17,6 +19,7 @@ def get_all_users(token: Annotated[str, Header()]):
         return data
 
     return Forbidden('Only admins can access this endpoint')
+
 
 @user_router.post('/', response_model=User,
                   response_model_exclude={'password', 'is_admin'})

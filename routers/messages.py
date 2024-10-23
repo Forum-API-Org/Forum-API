@@ -18,7 +18,7 @@ def create_message(receiver_id, msg: MessageText, token: Annotated[str, Header()
 
     if not msg.text.strip():
         return BadRequest(content="Message text cannot be empty.")
-    
+
     if len(msg.text) > 500:
         return BadRequest(content="Reply text cannot be more than 500 characters.")
 
@@ -37,7 +37,7 @@ def view_conversation(receiver_id: int, token: Annotated[str, Header()]):
     #     return NotFound(content="Receiver does not exist.")
 
     result = messages_service.all_messages(receiver_id, token)
-    
+
     if not result:
         return NotFound(content="No conversation found")
 

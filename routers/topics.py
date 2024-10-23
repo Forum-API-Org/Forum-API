@@ -26,7 +26,7 @@ def get_topic_by_id(id: int):
         }
 
 
-@topics_router.post('')
+@topics_router.post('/')
 def create_topic(category_id: int, user_id: int, topic_name: str):
     topic = topics_service.create(category_id, user_id, topic_name)
 

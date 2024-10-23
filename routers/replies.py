@@ -4,7 +4,7 @@ from services import replies_service, topics_service
 from data.models import ReplyText
 from typing import Annotated
 
-replies_router = APIRouter(prefix = "/replies", tags = ["Replies"])
+replies_router = APIRouter(prefix="/replies", tags=["Replies"])
 
 
 @replies_router.post('/{topic_id}')
@@ -18,7 +18,7 @@ def create_reply(topic_id: int, reply_text: ReplyText, token: Annotated[str, Hea
 
     if not reply_text.text.strip():
         return BadRequest(content="Reply text cannot be empty.")
-    
+
     if len(reply_text.text) > 200:
         return BadRequest(content="Reply text cannot be more than 200 characters.")
 

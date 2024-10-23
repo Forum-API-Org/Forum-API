@@ -1,13 +1,12 @@
 from fastapi import APIRouter
 
-from data.models import Category
-from services import categories_service
 from common.responses import NotFound, BadRequest
+from services import categories_service
 
 cat_router = APIRouter(prefix="/categories", tags=["Categories"])
 
 
-@cat_router.get('')
+@cat_router.get('/')
 def get_all_categories():
 
     data = categories_service.get_categories()
@@ -29,7 +28,7 @@ def get_category_by_id(id: int):
         }
 
 
-@cat_router.post('')
+@cat_router.post('/')
 def create_category(cat_name: str, creator_id: int):
     category = categories_service.create(cat_name, creator_id)
 

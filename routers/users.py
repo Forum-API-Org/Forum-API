@@ -4,7 +4,7 @@ from fastapi import APIRouter, Header
 
 
 from services import users_service
-from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName
+from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName, LoginData
 from common.responses import BadRequest, Forbidden, Unauthorized
 
 user_router = APIRouter(prefix='/users', tags=['Users'])
@@ -24,19 +24,19 @@ def get_all_users(token: Annotated[str, Header()]):
 @user_router.post('/', response_model=User,
                   response_model_exclude={'password', 'is_admin'})
                   # status_code=status.HTTP_201_CREATED)
-def register_user(email: TEmail,
-                  username: TUsername,
-                  password: TPassword,
-                  first_name: TName,
-                  last_name: TName):
+def register_user(user: User):
 
-    user = users_service.create_user(email, username, password, first_name, last_name)
+    user = users_service.create_user(user.email,
+                                     user.username,
+                                     user.password,
+                                     user.first_name,
+                                     user.last_name)
 
-    return user or BadRequest(f'Username "{username}" and or email "{email}" is already taken.')
+    return user or BadRequest(f'Username "{user.username}" and or email "{user.email}" is already taken.')
 
 @user_router.post('/login')
-def login_user(username: str, password: str):
-    user_data = users_service.login_user(username, password)
+def login_user(loginData: LoginData):
+    user_data = users_service.login_user(loginData)
 
     if user_data:
         token = users_service.create_token(user_data)

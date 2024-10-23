@@ -22,7 +22,7 @@ def get_users():  # Internal to be deleted
 
 
 
-def create_user(email: str, username: str, password: str, first_name: str, last_name: str ):
+def create_user(email: str, username: str, password: str, first_name: str, last_name: str )-> User:
 
     hashed_p = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     try:
@@ -36,13 +36,13 @@ def create_user(email: str, username: str, password: str, first_name: str, last_
         return None # може за всички валидации да се върне различно съобщение за грешка към BadRequest
     
 
-def login_user(username: str, password: str):
+def login_user(loginData):
     try:
-        user_data = read_query('''SELECT id, username, user_pass, is_admin FROM users WHERE username = ?;''', (username,))
+        user_data = read_query('''SELECT id, username, user_pass, is_admin FROM users WHERE username = ?;''', (loginData.username,))
 
         hashed_pass_db = user_data[0][2]
 
-        if user_data and bcrypt.checkpw(password.encode('utf-8'), hashed_pass_db.encode('utf-8')):
+        if user_data and bcrypt.checkpw(loginData.password.encode('utf-8'), hashed_pass_db.encode('utf-8')):
             return user_data
         else:
             raise None #HTTPException(status_code=401, detail='Incorrect login data!')

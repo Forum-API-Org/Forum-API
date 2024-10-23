@@ -30,11 +30,11 @@ def create_message(receiver_id, msg: MessageText, token: Annotated[str, Header()
 @message_router.get('/{receiver_id}')
 def view_conversation(receiver_id: int, token: Annotated[str, Header()]):
 
-    #if user authorization
 
-    # receiver = users_service.get_user_by_id(receiver_id)
-    # if not receiver:
-    #     return NotFound(content="Receiver does not exist.")
+
+    receiver = users_service.get_user_by_id(receiver_id)
+    if not receiver:
+        return NotFound(content="Receiver does not exist.")
 
     result = messages_service.all_messages(receiver_id, token)
 

@@ -1,4 +1,6 @@
 from datetime import datetime
+from tkinter.scrolledtext import example
+
 from pydantic import BaseModel, Field, constr
 from typing import Literal
 
@@ -52,7 +54,7 @@ TName = constr(pattern=r'^[a-zA-Z]+$')
 
 class User(BaseModel):
     id: int | None = None
-    email: TEmail
+    email: str = Field(pattern=r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$', examples=['a@a.com'])     #TEmail
     username: TUsername
     password: TPassword
     first_name: TName
@@ -69,6 +71,9 @@ class User(BaseModel):
                    last_name=last_name,
                    is_admin=is_admin)
 
+class LoginData(BaseModel):
+    username: str
+    password: str
 
 class UserResponse(BaseModel):
     id: int | None = None

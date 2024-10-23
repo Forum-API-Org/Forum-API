@@ -14,7 +14,7 @@ import os
 from datetime import timedelta, datetime, timezone
 import time
 
-def get_users(token):  # Internal to be deleted
+def get_users():  # Internal to be deleted
 
     data = read_query('''SELECT id, email, username, first_name, last_name, is_admin FROM users''')
 
@@ -63,7 +63,7 @@ def decode_token(token):
     except jwt.InvalidTokenError as e:
         raise HTTPException(status_code=401, detail='Invalid token')
 
-def is_admin(num: int):
+def is_admin(num: int) -> bool:
     return True if num == 1 else False
 
 def authenticate_user(token: str):

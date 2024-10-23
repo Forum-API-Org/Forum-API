@@ -13,7 +13,7 @@ def get_all_users(token: Annotated[str, Header()]):
     user_data = users_service.authenticate_user(token)
 
     if users_service.is_admin(user_data['is_admin']):
-        data = users_service.get_users(token)#response_model=List[schemas.User]
+        data = users_service.get_users()#response_model=List[schemas.User]
         return data
 
     return Forbidden('Only admins can access this endpoint')

@@ -1,21 +1,23 @@
-from fastapi import APIRouter
-
+from fastapi import APIRouter, Header
+from services.users_service import *
 from common.responses import NotFound, BadRequest
 from services import categories_service
+from typing import Annotated
 
 cat_router = APIRouter(prefix="/categories", tags=["Categories"])
 
 
 @cat_router.get('/')
-def get_all_categories():
-
+def get_all_categories(token: Annotated[str, Header()]):
+    authenticate_user(token)
     data = categories_service.get_categories()
 
     return data
 
 
 @cat_router.get('/{id}')
-def get_category_by_id(id: int):
+def get_category_by_id(id: int, token: Annotated[str, Header()]):
+    authenticate_user(token)
     category = categories_service.get_by_id(id)
     topics = categories_service.view_topics(id)
 
@@ -29,32 +31,44 @@ def get_category_by_id(id: int):
 
 
 @cat_router.post('/')
-def create_category(cat_name: str, creator_id: int):
-    category = categories_service.create(cat_name, creator_id)
+def create_category(cat_name: str, token: Annotated[str, Header()]):
+    user = authenticate_user(token)
+    category = categories_service.create(cat_name, user['user_id'])
 
     return category
 
 
 @cat_router.put('/lock/{id}')
-def lock_category(id: int):
+def lock_category(id: int, token: Annotated[str, Header()]):
+    user = authenticate_user(token)
+    if not is_admin(user['is_admin']) or not categories_service.is_owner(user['user_id'], id):
+        return BadRequest('Only admins and category owners can lock categories')
     result = categories_service.lock(id)
     return result
 
 
 @cat_router.put('/make_private/{id}')
-def make_category_private(id: int):
+def make_category_private(id: int, token: Annotated[str, Header()]):
+    user = authenticate_user(token)
+    if not is_admin(user['is_admin']) or not categories_service.is_owner(user['user_id'], id):
+        return BadRequest('Only admins and category owners can make categories private')
     result = categories_service.make_private(id)
     return result
 
 
 @cat_router.put('/unlock/{id}')
-def unlock_category(id: int):
+def unlock_category(id: int, token: Annotated[str, Header()]):
+    user = authenticate_user(token)
+    if not is_admin(user['is_admin']) or not categories_service.is_owner(user['user_id'], id):
+        return BadRequest('Only admins and category owners can unlock categories')
     result = categories_service.unlock(id)
     return result
 
 
 @cat_router.put('/make_public/{id}')
-def make_category_public(id: int):
+def make_category_public(id: int, token: Annotated[str, Header()]):
+    user = authenticate_user(token)
+    if not is_admin(user['is_admin']) or not categories_service.is_owner(user['user_id'], id):
+        return BadRequest('Only admins and category owners can make categories public')
     result = categories_service.make_public(id)
     return result
-

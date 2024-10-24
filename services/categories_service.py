@@ -80,3 +80,8 @@ def make_public(id: int):
         return BadRequest('Category is already public.')
     update_query('update categories set is_private = 0 where id = ?', (id,))
     return get_by_id(id)
+
+
+def is_owner(user_id, category_id):
+    data = read_query('select creator_id from categories where id = ?', (category_id,))
+    return user_id == data[0][0]

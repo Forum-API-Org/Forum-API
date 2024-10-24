@@ -78,3 +78,8 @@ def unlock(id: int):
 def make_best_reply(topic_id: int, reply_id: int):
     update_query('update topics set best_reply_id = ? where id = ?', (reply_id, topic_id))
     return get_by_id(topic_id)
+
+
+def is_owner(user_id, topic_id):
+    data = read_query('select user_id from topics where id = ?', (topic_id,))
+    return user_id == data[0][0]

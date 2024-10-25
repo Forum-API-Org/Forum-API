@@ -24,6 +24,7 @@ class Topic(BaseModel):
 
 class ReplyText(BaseModel):
     text: str
+    topic_id: int
 
 class Reply(BaseModel):
     id: int | None
@@ -95,6 +96,15 @@ class UserResponse(BaseModel):
                    first_name=first_name,
                    last_name=last_name,
                    is_admin=is_admin)
+    
+class UserResponseChats(BaseModel):
+    id: int | None = None
+    username: str
+
+    @classmethod
+    def from_query_result(cls, id, username):
+        return cls(id=id,
+                   username=username,)
 
 #class logindata(BaseModel):
 
@@ -102,6 +112,18 @@ class UserResponse(BaseModel):
 
 class MessageText(BaseModel):
     text: str
+    receiver_id: int
+
+class MessageOutput(BaseModel):
+    sender_id: int
+    message_date: datetime
+    message_text: str
+
+    @classmethod
+    def from_query_result(cls, sender_id, message_date, message_text):
+        return cls(sender_id=sender_id,
+                   message_date=message_date,
+                   message_text=message_text)
 
 class Message(BaseModel):
     id: int | None

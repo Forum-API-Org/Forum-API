@@ -1,30 +1,30 @@
-from data.models import Message, MessageText, UserResponse
+from data.models import Message, MessageText, UserResponseChats, MessageOutput
 from data.database import insert_query, read_query
 from services.users_service import authenticate_user
 
 
-def create(receiver_id, msg: MessageText, token):
+def create(msg: MessageText, token):
 
     user = authenticate_user(token)
     if user:
         
-        receiver_exists = read_query('SELECT id FROM users WHERE id = ?', (receiver_id,))
+        receiver_exists = read_query('SELECT id FROM users WHERE id = ?', (msg.receiver_id,))
         if not receiver_exists:
             return {"error": "Receiver does not exist"}
 
         _  = insert_query(
             '''INSERT INTO messages(sender_id, receiver_id, message_date, message_text) VALUES (?, ?, now(), ?)''',
-            (user['user_id'], receiver_id, msg.text)
+            (user['user_id'], msg.receiver_id, msg.text)
         )
 
-        return msg.text
+        return msg
 
 def all_messages(receiver_id: int, token):
 
     user = authenticate_user(token)
     if user:
         messages = read_query(
-            ''' SELECT * 
+            ''' SELECT sender_id, message_date, message_text 
                 FROM messages 
                 WHERE (sender_id = ? or sender_id = ?)
                 AND (receiver_id = ? or receiver_id = ?)
@@ -32,7 +32,7 @@ def all_messages(receiver_id: int, token):
             (user['user_id'], receiver_id, user['user_id'], receiver_id)
         )
 
-        data = [Message.from_query_result(*row) for row in messages]
+        data = [MessageOutput.from_query_result(*row) for row in messages]
 
         return data
 
@@ -44,7 +44,7 @@ def all_conversations(token):
 
     if user:
         conversations = read_query('''
-            SELECT DISTINCT u.id, u.email, u.username, u.first_name, u.last_name, u.is_admin
+            SELECT DISTINCT u.id, u.username
             FROM messages m
             JOIN users u ON (u.id = m.sender_id OR u.id = m.receiver_id)
             WHERE (m.sender_id = ? OR m.receiver_id = ?)
@@ -52,7 +52,6 @@ def all_conversations(token):
         ''', 
         (user_id, user_id, user_id))
 
-        а=3
 
-        return [UserResponse.from_query_result(*row) for row in conversations]
+        return [UserResponseChats.from_query_result(*row) for row in conversations]
 

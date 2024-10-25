@@ -1,21 +1,17 @@
-from data.models import Reply , ReplyText
+from data.models import ReplyResponse , ReplyText
 from data.database import insert_query, read_query
-from data.models import Reply
 from services.users_service import authenticate_user
 
 
-def get_reply_by_id(id: int, token) -> Reply:
+def get_reply_by_id(id: int, token) -> ReplyResponse:
 
     user = authenticate_user(token)
     if user:
-        data = read_query('''select * from replies where id = ?''', (id,))
-        return (Reply(id=id,
-                    topic_id=topic_id,
-                    user_id=user_id,
-                    reply_date=str(reply_date),
-                    reply_text=reply_text,
-                    replies_reply_id=replies_reply_id)
-                for id, topic_id, user_id, reply_date, reply_text, replies_reply_id in data)
+        data = read_query('''select user_id, reply_date, reply_text from replies where id = ?''', (id,))
+        return (ReplyResponse(user_id=user_id,
+                    reply_date=reply_date,
+                    reply_text=reply_text,)
+                for user_id, reply_date, reply_text in data)
 
 
 def create(reply_text: ReplyText, token):

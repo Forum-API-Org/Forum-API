@@ -26,11 +26,23 @@ class ReplyText(BaseModel):
     text: str
     topic_id: int
 
+class ReplyResponse(BaseModel):
+    user_id: int
+    reply_date: datetime
+    reply_text: str
+
+    @classmethod
+    def from_query_result(cls, user_id, reply_date, reply_text):
+        return cls(user_id=user_id,
+                   reply_date=reply_date,
+                   reply_text=reply_text
+                   )
+
 class Reply(BaseModel):
     id: int | None
     topic_id: int
     user_id: int
-    reply_date: str  # date
+    reply_date: datetime
     reply_text: str
     replies_reply_id: int | None = None
 

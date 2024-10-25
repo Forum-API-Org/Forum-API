@@ -7,7 +7,7 @@ from typing import Annotated
 replies_router = APIRouter(prefix="/replies", tags=["Replies"])
 
 
-@replies_router.post('/', response_model=Reply)
+@replies_router.post('/')
 def create_reply(reply: ReplyText, token: Annotated[str, Header()]):
 
     #if user
@@ -15,6 +15,9 @@ def create_reply(reply: ReplyText, token: Annotated[str, Header()]):
     topic = topics_service.get_by_id(reply.topic_id)
     if not topic:
         return NotFound(content="Topic not found.")
+    
+    # if topic.status != "open":
+    #     return BadRequest(content="This topic is closed for new replies.")
 
     if not reply.text.strip():
         return BadRequest(content="Reply text cannot be empty.")

@@ -17,7 +17,16 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="eaa034ab-14f8-4ff3-a3bb-9a17d8df80b3">
-      <console name="ForumDB" type="STANDARD" schema="forum_3" session="Main"><![CDATA[select * from votes;]]></console>
+      <console name="ForumDB" type="STANDARD" schema="forum_3" session="Main"><![CDATA[select
+    u.email,
+    u.first_name,
+    u.id,
+    u.is_admin,
+    u.last_name,
+    u.user_pass,
+    u.username
+from
+    users u;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -31,6 +40,7 @@
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="eaa034ab-14f8-4ff3-a3bb-9a17d8df80b3" dataset="forum_3.categories" active-filter-id="" />
+    <filter-actions connection-id="eaa034ab-14f8-4ff3-a3bb-9a17d8df80b3" dataset="forum_3.users" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
@@ -104,7 +114,7 @@
           <tcp-port-to value="4999" />
           <debugger-type value="JDBC" />
         </debugger>
-        <object-filters hide-empty-schemas="true" hide-pseudo-columns="false" hide-audit-columns="false">
+        <object-filters hide-empty-schemas="false" hide-pseudo-columns="false" hide-audit-columns="false">
           <object-filters />
           <object-type-filter use-master-settings="true">
             <object-type name="SCHEMA" enabled="true" />

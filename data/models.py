@@ -1,26 +1,74 @@
 from datetime import datetime
-from tkinter.scrolledtext import example
-
 from pydantic import BaseModel, Field, constr
-from typing import Literal
-
-
-class Category(BaseModel):
-    id: int | None
-    cat_name: str
-    creator_id: int
-    is_locked: bool
-    is_private: bool
+from typing import Literal, Optional
 
 
 class Topic(BaseModel):
     id: int | None
-    top_name: str
+    top_name: str = Field(min_length=3, max_length=20, examples=['Engines'])
     category_id: int
     user_id: int
     topic_date: str  # date
-    is_locked: bool
+    is_locked: bool = 0
     best_reply_id: int | None = None
+
+    @classmethod
+    def from_query_result(cls, id, top_name, category_id, user_id, topic_date, is_locked, best_reply_id):
+        return cls(id=id,
+                   top_name=top_name,
+                   category_id=category_id,
+                   user_id=user_id,
+                   topic_date=topic_date,
+                   is_locked=is_locked,
+                   best_reply_id=best_reply_id)
+
+
+class TopicResponse(BaseModel):
+    top_name: str
+    user_id: int
+    topic_date: str  # date
+    is_locked: bool = 0
+    best_reply_id: Optional[int] | None = None
+
+    @classmethod
+    def from_query_result(cls, top_name, user_id, topic_date, is_locked, best_reply_id):
+        return cls(top_name=top_name,
+                   user_id=user_id,
+                   topic_date=topic_date,
+                   is_locked=is_locked,
+                   best_reply_id=best_reply_id)
+
+
+class Category(BaseModel):
+    id: int | None
+    cat_name: str = Field(pattern=r'^[a-zA-Z0-9_.+-]+$', min_length=3, max_length=20, examples=['Cars'])
+    creator_id: int
+    is_locked: bool
+    is_private: bool
+
+    @classmethod
+    def from_query_result(cls, id, cat_name, creator_id, is_locked, is_private):
+        return cls(id=id,
+                   cat_name=cat_name,
+                   creator_id=creator_id,
+                   is_locked=is_locked,
+                   is_private=is_private)
+
+
+class CategoryResponse(BaseModel):
+    cat_name: str = Field(pattern=r'^[a-zA-Z0-9_.+-]+$', min_length=3, max_length=20, examples=['Cars'])
+    creator_id: int
+    is_locked: bool
+    is_private: bool
+    topics: Optional[list[TopicResponse]] = None
+
+    @classmethod
+    def from_query_result(cls, cat_name, creator_id, is_locked, is_private):
+        return cls(cat_name=cat_name,
+                   creator_id=creator_id,
+                   is_locked=is_locked,
+                   is_private=is_private)
+
 
 class ReplyText(BaseModel):
     text: str

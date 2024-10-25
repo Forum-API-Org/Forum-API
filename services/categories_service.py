@@ -1,41 +1,63 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Category, Topic
+from data.models import Category, Topic, CategoryResponse, TopicResponse
 import datetime
 from common.responses import BadRequest
 
 
 def get_categories():
-    data = read_query('select * from categories order by id')
+    data = read_query('select cat_name, creator_id, is_locked, is_private from categories order by id')
 
-    return (Category(id=id, cat_name=cat_name, creator_id=creator_id, is_locked=is_locked, is_private=is_private) for id, cat_name, creator_id, is_locked, is_private in data)
+    return [(CategoryResponse.from_query_result(cat_name=cat_name,
+                                                creator_id=creator_id,
+                                                is_locked=is_locked,
+                                                is_private=is_private))
+            for cat_name,
+            creator_id,
+            is_locked,
+            is_private
+            in data]
 
 
 def view_topics(id: int):
-    data = read_query('select * from topics where category_id = ?', (id,))
+    data = read_query('''select top_name, user_id, topic_date, is_locked, best_reply_id
+                             from topics
+                             where category_id = ?''', (id,))
 
-    return (Topic(id=id,
-                  top_name=top_name,
-                  category_id=category_id,
-                  user_id=user_id,
-                  topic_date=str(topic_date),
-                  is_locked=is_locked,
-                  best_reply_id=best_reply_id)
-            for id, top_name, category_id, user_id, topic_date, is_locked, best_reply_id in data)
+    if not data:
+        return []
+
+    return [(TopicResponse.from_query_result(top_name=top_name,
+                                             user_id=user_id,
+                                             topic_date=str(topic_date),
+                                             is_locked=is_locked,
+                                             best_reply_id=best_reply_id))
+            for top_name, user_id, topic_date, is_locked, best_reply_id in data]
 
 
 def get_by_id(id: int):
-    data = read_query('select * from categories where id = ?', (id,))
+    data = read_query('select cat_name, creator_id, is_locked, is_private from categories where id = ?', (id,))
 
-    return (Category(id=id, cat_name=cat_name, creator_id=creator_id, is_locked=is_locked, is_private=is_private)
-                 for id, cat_name, creator_id, is_locked, is_private in data)
+    if not data:
+        return None
 
+    cat_name, creator_id, is_locked, is_private = data[0]
+
+    topics = view_topics(id)
+
+    return (CategoryResponse(
+        cat_name=cat_name,
+        creator_id=creator_id,
+        is_locked=is_locked,
+        is_private=is_private,
+        topics=topics
+    ))
 
 # def exists(id: int):
 #     return any(
 #         read_query(
 #             'select id, name from categories where id = ?',
 #             (id,)))
-#
+
 
 def create(cat_name, creator_id):
     generated_id = insert_query(

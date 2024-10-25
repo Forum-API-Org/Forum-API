@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Header
+from data.models import Topic
 from services import topics_service
 from common.responses import NotFound, BadRequest
 from typing import Annotated
@@ -29,10 +30,10 @@ def get_topic_by_id(id: int, token: Annotated[str, Header()]):
         }
 
 
-@topics_router.post('/')
-def create_topic(category_id: int, topic_name: str, token: Annotated[str, Header()]):
+@topics_router.post('/', response_model=Topic, response_model_exclude={'id', 'user_id', 'best_reply_id'})
+def create_topic(topic: Topic, token: Annotated[str, Header()], ):  # category_id: int, topic_name: str,
     user = authenticate_user(token)
-    topic = topics_service.create(category_id, user['user_id'], topic_name)
+    topic = topics_service.create(topic.category_id, user['user_id'], topic.top_name)
 
     return topic
 

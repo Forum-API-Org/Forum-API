@@ -4,8 +4,8 @@ from fastapi import APIRouter, Header
 
 
 from services import users_service
-from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName, LoginData, UserCategoryAccess
-from common.responses import BadRequest, Forbidden, Unauthorized
+from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName, LoginData, UserCategoryAccess, UserAccessResponse
+from common.responses import BadRequest, Forbidden, Unauthorized, NotFound
 
 user_router = APIRouter(prefix='/users', tags=['Users'])
 
@@ -27,16 +27,16 @@ def get_all_users(token: Annotated[str, Header()]):
 def register_user(user: User):
 
     user = users_service.create_user(user.email,
-                                     user.username,
+                                     user.username,# 45 max lenght, check the DB
                                      user.password,
                                      user.first_name,
                                      user.last_name)
 
-    return user or BadRequest(f'Username "{user.username}" and or email "{user.email}" is already taken.')
+    return user #or BadRequest(f'Username "" and or email "" is already taken.')
 
 @user_router.post('/login')
-def login_user(loginData: LoginData):
-    user_data = users_service.login_user(loginData)
+def login_user(login_data: LoginData):
+    user_data = users_service.login_user(login_data)
 
     if user_data:
         token = users_service.create_token(user_data)
@@ -83,3 +83,14 @@ def revoke_user_access(token: Annotated[str, Header()], user_category_id: UserCa
         return data or BadRequest(f'User with id {user_category_id.user_id} has no existing access for category with id {user_category_id.category_id}!')
 
     return Forbidden('Only admins can access this endpoint')
+
+@user_router.get('/privileges', response_model=list[UserAccessResponse],
+                  response_model_exclude={'password', 'is_admin'})
+def view_privileged_users(token: Annotated[str, Header()], category_id):
+
+    user_data = users_service.authenticate_user(token)
+
+    if users_service.is_admin(user_data['is_admin']):
+        data = users_service.view_privileged_users(category_id)
+
+    return data or NotFound(f'Category with id {category_id} does not exist!')

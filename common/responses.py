@@ -20,7 +20,7 @@ class Forbidden(Response):
         super().__init__(status_code=403, content=content)
 
 
-class NoContent(Response):
+class NoContent(Response): # pri delete
     def __init__(self):
         super().__init__(status_code=204)
 

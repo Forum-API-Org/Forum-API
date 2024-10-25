@@ -54,11 +54,11 @@ TName = constr(pattern=r'^[a-zA-Z]+$')
 
 class User(BaseModel):
     id: int | None = None
-    email: str = Field(pattern=r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$', examples=['a@a.com'])     #TEmail
-    username: TUsername
-    password: TPassword
-    first_name: TName
-    last_name: TName
+    email: str = Field(max_length=45, pattern=r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$', examples=['a@a.com'])     #TEmail
+    username: str = Field(pattern=r'^[a-zA-Z0-9_.+-]+$', examples=['user1_+.-'])
+    password: str = Field(min_length=5, max_length=20, pattern=r'^[a-zA-Z0-9_.+-]+$')
+    first_name: str = Field(min_length=1, max_length=45, pattern=r'^[a-zA-Z]+$')
+    last_name: str = Field(min_length=1, max_length=45, pattern=r'^[a-zA-Z]+$')
     is_admin: bool | None = 0
 
     @classmethod
@@ -95,6 +95,24 @@ class UserResponse(BaseModel):
                    first_name=first_name,
                    last_name=last_name,
                    is_admin=is_admin)
+
+class UserAccessResponse(BaseModel):
+    id: int | None = None
+    email: str
+    username: str
+    first_name: str
+    last_name: str
+    access: str | None = None
+
+    @classmethod
+    def from_query_result(cls, id, email, username, first_name, last_name, access_type):
+        access_str = "read" if access_type == 0 else "write" if access_type == 1 else None
+        return cls(id=id,
+                   email=email,
+                   username=username,
+                   first_name=first_name,
+                   last_name=last_name,
+                   access=access_str)
 
 #class logindata(BaseModel):
 

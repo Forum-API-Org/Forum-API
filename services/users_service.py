@@ -1,13 +1,11 @@
 from fastapi import HTTPException
 from logging import raiseExceptions
-
 from starlette.responses import JSONResponse
-
 from common.responses import BadRequest, Unauthorized, Forbidden
-from data.models import User, LoginData, UserResponse, UserCategoryAccess
+from data.models import User, LoginData, UserResponse, UserCategoryAccess, UserAccessResponse
 from data.database import read_query, update_query, insert_query
 import bcrypt
-from mariadb import IntegrityError
+# from mariadb import IntegrityError
 import jwt
 from dotenv import load_dotenv
 import os
@@ -20,40 +18,45 @@ def get_users():  # Internal to be deleted
 
     return (UserResponse.from_query_result(*row) for row in data)
 
-
+def check_if_exists(attribute:str, message: str):
+    if read_query('''select * from users where username = ?''', (attribute,)):
+        raise HTTPException(status_code=400, detail=message)
 
 def create_user(email: str, username: str, password: str, first_name: str, last_name: str )-> User:
 
+    check_if_exists(email, "Email already taken.")
+    check_if_exists(username, "Username already taken.")
+
     hashed_p = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-    try:
-        generated_id = insert_query(
-            '''INSERT INTO users(email, username, user_pass, first_name, last_name) VALUES (?,?,?,?,?);''',
-            (email, username, hashed_p, first_name, last_name))
+    # try:
+    generated_id = insert_query(
+        '''INSERT INTO users(email, username, user_pass, first_name, last_name) VALUES (?,?,?,?,?);''',
+        (email, username, hashed_p, first_name, last_name))
 
-        return User(id = generated_id, email = email, username = username, password = password, first_name = first_name, last_name = last_name)
-    except IntegrityError:
-
-        return None # може за всички валидации да се върне различно съобщение за грешка към BadRequest
+    return User(id = generated_id, email = email, username = username, password = password, first_name = first_name, last_name = last_name)
+    # except IntegrityError:
+    #
+    #     return None # може за всички валидации да се върне различно съобщение за грешка към BadRequest
     
 
-def login_user(loginData):
-    try:
-        user_data = read_query('''SELECT id, username, user_pass, is_admin FROM users WHERE username = ?;''', (loginData.username,))
+def login_user(login_data):
+    # try:
+    user_data = read_query('''SELECT id, username, user_pass, is_admin FROM users WHERE username = ?;''', (login_data.username,))
 
-        hashed_pass_db = user_data[0][2]
+    # hashed_pass_db = user_data[0][2]
 
-        if user_data and bcrypt.checkpw(loginData.password.encode('utf-8'), hashed_pass_db.encode('utf-8')):
-            return user_data
-        else:
-            raise None #HTTPException(status_code=401, detail='Incorrect login data!')
-    except IndexError as e:
-        raise HTTPException(status_code=401, detail='Incorrect login data!')
+    if user_data and bcrypt.checkpw(login_data.password.encode('utf-8'), user_data[0][2].encode('utf-8')):
+        return user_data
+    else:
+        return None #HTTPException(status_code=401, detail='Incorrect login data!')
+    # except IndexError as e: #redo =>
+    #     raise HTTPException(status_code=401, detail='Incorrect login data!')
 
 def create_token(user_data):
     payload = {'user_id': user_data[0][0],
                'username': user_data[0][1],
            'is_admin': user_data[0][-1],
-               'exp': datetime.now(timezone.utc) + timedelta(minutes=90)}
+               'exp': datetime.now(timezone.utc) + timedelta(minutes=90)} #за презентацията по-дълъг expiration да си подготвим от преди презентацията
 
     token = jwt.encode(payload, os.getenv('JWT_SECRET_KEY'), algorithm='HS256')
 
@@ -109,6 +112,7 @@ def blacklist_user(token: str):
 
 def give_user_r_access(user_id, category_id):
 
+    #check if private at all
 
     if any(read_query('''select user_id, category_id, access_type from private_cat_access
                              where user_id = ? and category_id = ? and access_type = 0''',
@@ -163,7 +167,14 @@ def revoke_access(user_id, category_id):
     else:
         return None
 
+def view_privileged_users(category_id)-> list[UserAccessResponse]:
 
+    data = read_query('''select p.user_id, u.email, u.username, u.first_name, u.last_name, p.access_type 
+                        from private_cat_access p
+                        join users u on u.id = p.user_id
+                        where category_id = ?;''', (category_id,))
+
+    return [UserAccessResponse.from_query_result(*row) for row in data]
 
 # def get_user(username: str):
 #

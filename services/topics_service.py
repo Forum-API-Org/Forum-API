@@ -30,16 +30,16 @@ def view_replies(id: int):
 
 
 def get_by_id(id: int):
-    data = read_query('select * from topics where id = ?', (id,))
+    return any(read_query('select * from topics where id = ?', (id,)))
 
-    return (Topic(id=id,
-                  top_name=top_name,
-                  category_id=category_id,
-                  user_id=user_id,
-                  topic_date=str(topic_date),
-                  is_locked=is_locked,
-                  best_reply_id=best_reply_id)
-            for id, top_name, category_id, user_id, topic_date, is_locked, best_reply_id in data)
+    # return (Topic(id=id,
+    #               top_name=top_name,
+    #               category_id=category_id,
+    #               user_id=user_id,
+    #               topic_date=str(topic_date),
+    #               is_locked=is_locked,
+    #               best_reply_id=best_reply_id)
+    #         for id, top_name, category_id, user_id, topic_date, is_locked, best_reply_id in data)
 
 
 # def exists(id: int):

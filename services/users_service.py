@@ -89,7 +89,11 @@ def authenticate_user(token: str):
 
 def user_exists(user_data):
     return any(read_query('''SELECT * from users where id = ? and username = ?''',
-                          (user_data['user_id'], user_data['username'] )))
+                          (user_data['user_id'], user_data['username'])))
+
+def user_id_exists(user_id):
+    return any(read_query('''SELECT * from users where id = ?''',
+                          (user_id,)))
 
 def get_user_by_id(id: int):
     return any(read_query('''SELECT * from users where id = ? ''',
@@ -110,9 +114,10 @@ def blacklist_user(token: str):
     else:
         return False
 
-def give_user_r_access(user_id, category_id):
+def check_if_private(category_id):
+    return any(read_query('''select * from private_cat_access where category_id = ?''', (category_id,)))
 
-    #check if private at all
+def give_user_r_access(user_id, category_id):
 
     if any(read_query('''select user_id, category_id, access_type from private_cat_access
                              where user_id = ? and category_id = ? and access_type = 0''',

@@ -1,9 +1,6 @@
 from typing import Annotated
-
 from fastapi import APIRouter, Header
-
-
-from services import users_service
+from services import users_service, categories_service
 from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName, LoginData, UserCategoryAccess, UserAccessResponse
 from common.responses import BadRequest, Forbidden, Unauthorized, NotFound
 
@@ -27,7 +24,7 @@ def get_all_users(token: Annotated[str, Header()]):
 def register_user(user: User):
 
     user = users_service.create_user(user.email,
-                                     user.username,# 45 max lenght, check the DB
+                                     user.username,
                                      user.password,
                                      user.first_name,
                                      user.last_name)
@@ -53,7 +50,16 @@ def logout_user(token: Annotated[str, Header()]):
 
 @user_router.put('/read_access')
 def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
-    #check_category_id_exists(category_id)
+
+    # if not categories_service.category_exists(category_id):
+    #     return NotFound('Category does not exist!')
+
+    if not users_service.check_if_private(user_category_id.category_id):
+        return BadRequest(f'Category {user_category_id.category_id} is not private.')
+
+    if not users_service.user_id_exists(user_category_id.user_id):
+        return NotFound(f'User with id {user_category_id.user_id} does not exist!')
+
     user_data = users_service.authenticate_user(token)
 
     if users_service.is_admin(user_data['is_admin']):
@@ -63,8 +69,17 @@ def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated
     return Forbidden('Only admins can access this endpoint')
 
 @user_router.put('/write_access')
-def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
-    #check_category_id_exists(category_id)
+def give_user_write_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
+
+    # if not categories_service.category_exists(category_id):
+    #     return NotFound('Category does not exist!')
+
+    if not users_service.check_if_private(user_category_id.category_id):
+        return BadRequest(f'Category {user_category_id.category_id} is not private.')
+
+    if not users_service.user_id_exists(user_category_id.user_id):
+        return NotFound(f'User with id {user_category_id.user_id} does not exist!')
+
     user_data = users_service.authenticate_user(token)
 
     if users_service.is_admin(user_data['is_admin']):
@@ -75,7 +90,16 @@ def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated
 
 @user_router.delete('/revoke_access')
 def revoke_user_access(token: Annotated[str, Header()], user_category_id: UserCategoryAccess):
-        #check_category_id_exists(category_id)
+
+    # if not categories_service.category_exists(category_id):
+    #     return NotFound('Category does not exist!')
+
+    if not users_service.check_if_private(user_category_id.category_id):
+        return BadRequest(f'Category {user_category_id.category_id} is not private.')
+
+    if not users_service.user_id_exists(user_category_id.user_id):
+        return NotFound(f'User with id {user_category_id.user_id} does not exist!')
+
     user_data = users_service.authenticate_user(token)
 
     if users_service.is_admin(user_data['is_admin']):
@@ -88,9 +112,16 @@ def revoke_user_access(token: Annotated[str, Header()], user_category_id: UserCa
                   response_model_exclude={'password', 'is_admin'})
 def view_privileged_users(token: Annotated[str, Header()], category_id):
 
+    # if not categories_service.category_exists(category_id):
+    #     return NotFound('Category does not exist!')
+
+    if not users_service.check_if_private(category_id):
+        return BadRequest(f'Category {category_id} is not private.')
+
     user_data = users_service.authenticate_user(token)
 
     if users_service.is_admin(user_data['is_admin']):
         data = users_service.view_privileged_users(category_id)
+        return data
 
-    return data or NotFound(f'Category with id {category_id} does not exist!')
+    return Forbidden('Only admins can access this endpoint')

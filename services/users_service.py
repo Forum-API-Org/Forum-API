@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from logging import raiseExceptions
 from starlette.responses import JSONResponse
-from common.responses import BadRequest, Unauthorized, Forbidden
+from common.responses import BadRequest, Unauthorized, Forbidden, NoContent
 from data.models import User, LoginData, UserResponse, UserCategoryAccess, UserAccessResponse
 from data.database import read_query, update_query, insert_query
 import bcrypt
@@ -164,11 +164,11 @@ def give_user_w_access(user_id, category_id):
 def revoke_access(user_id, category_id):
 
     if any(read_query('''select user_id, category_id, access_type from private_cat_access
-                            where user_id = ? and category_id = ? and access_type = 1''',
+                            where user_id = ? and category_id = ? and (access_type = 1 or access_type = 0)''',
                 (user_id, category_id))):
-        insert_query('''delete from private_cat_access where user_id = ? and category_id = ? and access_type = 1''',
+        insert_query('''delete from private_cat_access where user_id = ? and category_id = ? and (access_type = 1 or access_type = 0)''',
                 (user_id, category_id))
-        return f'Successfully delete access for user with id {user_id} for category with id {category_id}'
+        return NoContent()#f'Successfully delete access for user with id {user_id} for category with id {category_id}'
     else:
         return None
 

@@ -1,5 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Header
+from starlette import status
+
 from services import users_service, categories_service
 from data.models import User, UserResponse, TEmail, TUsername, TPassword, TName, LoginData, UserCategoryAccess, UserAccessResponse
 from common.responses import BadRequest, Forbidden, Unauthorized, NotFound
@@ -19,8 +21,8 @@ def get_all_users(token: Annotated[str, Header()]):
 
 
 @user_router.post('/', response_model=User,
-                  response_model_exclude={'password', 'is_admin'})
-                  # status_code=status.HTTP_201_CREATED)
+                  response_model_exclude={'password', 'is_admin'},
+                  status_code=status.HTTP_201_CREATED)
 def register_user(user: User):
 
     user = users_service.create_user(user.email,
@@ -29,7 +31,7 @@ def register_user(user: User):
                                      user.first_name,
                                      user.last_name)
 
-    return user #or BadRequest(f'Username "" and or email "" is already taken.')
+    return user
 
 @user_router.post('/login')
 def login_user(login_data: LoginData):
@@ -51,8 +53,8 @@ def logout_user(token: Annotated[str, Header()]):
 @user_router.put('/read_access')
 def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
 
-    # if not categories_service.category_exists(category_id):
-    #     return NotFound('Category does not exist!')
+    if not categories_service.exists(user_category_id.category_id):
+        return NotFound('Category does not exist!')
 
     if not users_service.check_if_private(user_category_id.category_id):
         return BadRequest(f'Category {user_category_id.category_id} is not private.')
@@ -71,8 +73,8 @@ def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated
 @user_router.put('/write_access')
 def give_user_write_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
 
-    # if not categories_service.category_exists(category_id):
-    #     return NotFound('Category does not exist!')
+    if not categories_service.exists(user_category_id.category_id):
+        return NotFound('Category does not exist!')
 
     if not users_service.check_if_private(user_category_id.category_id):
         return BadRequest(f'Category {user_category_id.category_id} is not private.')
@@ -89,10 +91,12 @@ def give_user_write_access(user_category_id: UserCategoryAccess, token: Annotate
     return Forbidden('Only admins can access this endpoint')
 
 @user_router.delete('/revoke_access')
-def revoke_user_access(token: Annotated[str, Header()], user_category_id: UserCategoryAccess):
+def revoke_user_access(token: Annotated[str, Header()],
+                       user_category_id: UserCategoryAccess,
+                       status_code = status.HTTP_204_NO_CONTENT):
 
-    # if not categories_service.category_exists(category_id):
-    #     return NotFound('Category does not exist!')
+    if not categories_service.exists(user_category_id.category_id):
+        return NotFound('Category does not exist!')
 
     if not users_service.check_if_private(user_category_id.category_id):
         return BadRequest(f'Category {user_category_id.category_id} is not private.')

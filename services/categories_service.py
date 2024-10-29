@@ -52,11 +52,12 @@ def get_by_id(id: int):
         topics=topics
     ))
 
-# def exists(id: int):
-#     return any(
-#         read_query(
-#             'select id, name from categories where id = ?',
-#             (id,)))
+
+def exists(id: int):
+    return any(
+        read_query(
+            'select id, cat_name from categories where id = ?',
+            (id,)))
 
 
 def create(cat_name, creator_id):

@@ -116,8 +116,8 @@ def revoke_user_access(token: Annotated[str, Header()],
                   response_model_exclude={'password', 'is_admin'})
 def view_privileged_users(token: Annotated[str, Header()], category_id):
 
-    # if not categories_service.category_exists(category_id):
-    #     return NotFound('Category does not exist!')
+    if not categories_service.exists(category_id):
+        return NotFound('Category does not exist!')
 
     if not users_service.check_if_private(category_id):
         return BadRequest(f'Category {category_id} is not private.')

@@ -11,9 +11,9 @@ def create_message(receiver_id, msg: MessageText, token: Annotated[str, Header()
 
     #if user authorization
 
-    # receiver = users_service.get_user_by_id(receiver_id)
-    # if not receiver:
-    #     return NotFound(content="Receiver does not exist.")
+    receiver = users_service.get_user_by_id(receiver_id)
+    if not receiver:
+        return NotFound(content="Receiver does not exist.")
 
 
     if not msg.text.strip():

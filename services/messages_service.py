@@ -52,7 +52,5 @@ def all_conversations(token):
         ''', 
         (user_id, user_id, user_id))
 
-        а=3
-
         return [UserResponse.from_query_result(*row) for row in conversations]
 

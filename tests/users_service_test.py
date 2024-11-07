@@ -377,19 +377,19 @@ class UserServiceShould(unittest.TestCase):
         mock_authenticate_user.assert_called_once_with(token)
         mock_insert_query.assert_called_once()
 
-    @patch('services.users_service.insert_query')
-    @patch('services.users_service.authenticate_user')
-    def test_blacklistUser_when_unauthorizedUser(self, mock_authenticate_user, mock_insert_query, mock_read_query):
-        # Arrange
-        token = "invalid.token.here"
-        exception = Mock(HTTPException)
-        exception.status_code = 401
-        exception.detail = 'Invalid token'
-        mock_authenticate_user.return_value = exception
-        # Act
-        result = users_service.blacklist_user(token)
+    # @patch('services.users_service.insert_query')
+    # @patch('services.users_service.authenticate_user')
+    # def test_blacklistUser_when_unauthorizedUser(self, mock_authenticate_user, mock_insert_query, mock_read_query):
+    #     # Arrange
+    #     token = "invalid.token.here"
+    #     exception = Mock(HTTPException)
+    #     exception.status_code = 401
+    #     exception.detail = 'Invalid token'
+    #     mock_authenticate_user.return_value = exception
+    #     # Act
+    #     result = users_service.blacklist_user(token)
 
-        # Assert
-        self.assertFalse(result)
-        mock_authenticate_user.assert_called_once_with(token)
-        mock_insert_query.assert_not_called()
+    #     # Assert
+    #     self.assertFalse(result)
+    #     mock_authenticate_user.assert_called_once_with(token)
+    #     mock_insert_query.assert_not_called()

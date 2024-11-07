@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, HTTPException
 from starlette import status
 
 from services import users_service, categories_service
@@ -46,9 +46,14 @@ def login_user(login_data: LoginData):
 @user_router.post('/logout')
 def logout_user(token: Annotated[str, Header()]):
 
-    result = users_service.blacklist_user(token)
+    # result = users_service.blacklist_user(token)
 
-    return result or BadRequest('Invalid token!')
+    # return result or BadRequest('Invalid token!')
+    try:
+        result = users_service.blacklist_user(token)
+        return {'message': result}
+    except HTTPException as e:
+        return BadRequest(e.detail)
 
 @user_router.put('/read_access')
 def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read

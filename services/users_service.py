@@ -18,14 +18,18 @@ def get_users():  # Internal to be deleted
 
     return (UserResponse.from_query_result(*row) for row in data)
 
-def check_if_exists(attribute:str, message: str):
+def check_if_username_exists(attribute:str, message: str):
     if read_query('''select * from users where username = ?''', (attribute,)):
+        raise HTTPException(status_code=400, detail=message)
+
+def check_if_email_exists(attribute:str, message: str):
+    if read_query('''select * from users where email = ?''', (attribute,)):
         raise HTTPException(status_code=400, detail=message)
 
 def create_user(email: str, username: str, password: str, first_name: str, last_name: str )-> User:
 
-    check_if_exists(email, "Email already taken.")
-    check_if_exists(username, "Username already taken.")
+    check_if_email_exists(email, 'Email already taken.')
+    check_if_username_exists(username, 'Username already taken.')
 
     hashed_p = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     # try:
@@ -56,7 +60,7 @@ def create_token(user_data):
     payload = {'user_id': user_data[0][0],
                'username': user_data[0][1],
            'is_admin': user_data[0][-1],
-               'exp': datetime.now(timezone.utc) + timedelta(minutes=90)} #за презентацията по-дълъг expiration да си подготвим от преди презентацията
+               'exp': datetime.now(timezone.utc) + timedelta(minutes=9000)} #за презентацията по-дълъг expiration да си подготвим от преди презентацията
 
     token = jwt.encode(payload, os.getenv('JWT_SECRET_KEY'), algorithm='HS256')
 
@@ -77,15 +81,15 @@ def authenticate_user(token: str):
 
     if not the_blacklist:
         # try:
-            user_data =  decode_token(token)
-            if user_exists(user_data):
-                return user_data
-            else:
-                raise HTTPException(status_code=401, detail='Invalid user')
+        user_data = decode_token(token)
+        if user_exists(user_data):
+            return user_data
+        else:
+            raise HTTPException(status_code=401, detail='Invalid user')
         # except jwt.InvalidTokenError as e:
         #     raise HTTPException(status_code=401, detail='Invalid token')
-
-    raise HTTPException(status_code=401, detail='Invalid token')
+    else:
+        raise HTTPException(status_code=401, detail='Invalid token')
 
 def user_exists(user_data):
     return any(read_query('''SELECT * from users where id = ? and username = ?''',
@@ -107,12 +111,10 @@ def blacklist_user(token: str):
     authorised_user = authenticate_user(token)
 
     if not isinstance(authorised_user, Unauthorized):
-
         insert_query('''insert into tokens_blacklist (tokens_blacklist.token) values (?);''', (token,))
-
         return f'User successfully logged out.'
     else:
-        return False
+        raise HTTPException(status_code=401, detail='Invalid token') #return False
 
 def check_if_private(category_id):
     return any(read_query('''select * from private_cat_access where category_id = ?''', (category_id,)))

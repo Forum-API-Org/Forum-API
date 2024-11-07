@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Header
-from data.models import MessageText, Message, UserResponse
+from data.models import MessageText
 from common.responses import BadRequest, NotFound
 from services import messages_service, users_service
-from typing import Annotated, List
+from typing import Annotated
 
-message_router = APIRouter(prefix="/messages/users", tags=["Messages"])
+message_router = APIRouter(prefix="/messages", tags=["Messages"])
 
-@message_router.post('/')
-def create_message(msg: MessageText, token: Annotated[str, Header()]):
+@message_router.post('/{receiver_id}')
+def create_message(receiver_id, msg: MessageText, token: Annotated[str, Header()]):
 
     #if user authorization
 
@@ -22,7 +22,7 @@ def create_message(msg: MessageText, token: Annotated[str, Header()]):
     if len(msg.text) > 500:
         return BadRequest(content="Reply text cannot be more than 500 characters.")
 
-    message = messages_service.create(msg, token)
+    message = messages_service.create(receiver_id, msg, token)
 
     return message
 
@@ -42,7 +42,7 @@ def view_conversation(receiver_id: int, token: Annotated[str, Header()]):
 
     if not conversation:
         return NotFound(content="No conversation found")
-    
+
     return conversation
     #return [message.dict(exclude={"id", "receiver_id"}) for message in result]
     # return {

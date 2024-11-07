@@ -45,10 +45,6 @@ def login_user(login_data: LoginData):
 
 @user_router.post('/logout')
 def logout_user(token: Annotated[str, Header()]):
-
-    # result = users_service.blacklist_user(token)
-
-    # return result or BadRequest('Invalid token!')
     try:
         result = users_service.blacklist_user(token)
         return {'message': result}
@@ -134,3 +130,4 @@ def view_privileged_users(token: Annotated[str, Header()], category_id):
         return data
 
     return Forbidden('Only admins can access this endpoint')
+

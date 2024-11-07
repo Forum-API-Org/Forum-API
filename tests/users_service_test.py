@@ -1,6 +1,8 @@
 import math
 import unittest
 from unittest.mock import patch, Mock
+
+from common.responses import Unauthorized, NoContent
 from data.models import User
 from services import users_service
 from services.users_service import check_if_username_exists
@@ -377,19 +379,188 @@ class UserServiceShould(unittest.TestCase):
         mock_authenticate_user.assert_called_once_with(token)
         mock_insert_query.assert_called_once()
 
-    # @patch('services.users_service.insert_query')
-    # @patch('services.users_service.authenticate_user')
-    # def test_blacklistUser_when_unauthorizedUser(self, mock_authenticate_user, mock_insert_query, mock_read_query):
-    #     # Arrange
-    #     token = "invalid.token.here"
-    #     exception = Mock(HTTPException)
-    #     exception.status_code = 401
-    #     exception.detail = 'Invalid token'
-    #     mock_authenticate_user.return_value = exception
-    #     # Act
-    #     result = users_service.blacklist_user(token)
+    @patch('services.users_service.authenticate_user')
+    def test_blacklistUser_when_unauthorizedUser(self, mock_authenticate_user, mock_read_query):
+        # Arrange
+        token = "invalid.token.here"
+        mock_authenticate_user.return_value = Mock(spec=Unauthorized)
 
-    #     # Assert
-    #     self.assertFalse(result)
-    #     mock_authenticate_user.assert_called_once_with(token)
-    #     mock_insert_query.assert_not_called()
+        # Act & Assert
+        with self.assertRaises(HTTPException) as context:
+            users_service.blacklist_user(token)
+
+        self.assertEqual(context.exception.status_code, 401)
+        self.assertEqual(context.exception.detail, 'Invalid token')
+        mock_authenticate_user.assert_called_once_with(token)
+
+    def test_checkIfPrivate_when_categoryIsPrivate(self, mock_read_query):
+        # Arrange
+        category_id = 1
+        mock_read_query.return_value = [(1, 'some_data')]
+
+        # Act
+        result = users_service.check_if_private(category_id)
+
+        # Assert
+        self.assertTrue(result)
+        mock_read_query.assert_called_once()
+
+    def test_checkIfPrivate_when_categoryIsNotPrivate(self, mock_read_query):
+        # Arrange
+        category_id = 1
+        mock_read_query.return_value = []
+
+        # Act
+        result = users_service.check_if_private(category_id)
+
+        # Assert
+        self.assertFalse(result)
+        mock_read_query.assert_called_once()
+
+    def test_giveUserRAccess_when_userHasReadAccess(self, mock_read_query):
+        # Arrange
+        user_id = 1
+        category_id = 1
+        mock_read_query.side_effect = [[(1, 1, 0)], []]  # First query returns data (read access exists)
+
+        # Act
+        result = users_service.give_user_r_access(user_id, category_id)
+
+        # Assert
+        self.assertIsNone(result)
+        mock_read_query.assert_called_once()
+
+    @patch('services.users_service.update_query')
+    def test_giveUserRAccess_when_userHasWriteAccess(self, mock_update_query, mock_read_query):
+        # Arrange
+        user_id = 1
+        category_id = 1
+        mock_read_query.side_effect = [[], [(1, 1, 1)]]  # Second query returns data (write access exists)
+
+        # Act
+        result = users_service.give_user_r_access(user_id, category_id)
+
+        # Assert
+        self.assertEqual(result, f'Write access changed to read for user with id {user_id} for category with id {category_id}.')
+        self.assertEqual(mock_read_query.call_count, 2)
+        mock_update_query.assert_called_once()
+
+    @patch('services.users_service.insert_query')
+    def test_giveUserRAccess_when_userHasNoAccess(self, mock_insert_query, mock_read_query):
+        # Arrange
+        user_id = 1
+        category_id = 1
+        mock_read_query.side_effect = [[], []]  # Both queries return empty (no access exists)
+
+        # Act
+        result = users_service.give_user_r_access(user_id, category_id)
+
+        # Assert
+        self.assertEqual(result, f'Read access for category with id {category_id} has been given to user with id {user_id}.')
+        self.assertEqual(mock_read_query.call_count, 2)
+        mock_insert_query.assert_called_once()
+
+    def test_giveUserWAccess_when_userHasWriteAccess(self, mock_read_query):
+        # Arrange
+        user_id = 1
+        category_id = 1
+        mock_read_query.side_effect = [[(1, 1, 1)], []]  # First query returns data (write access exists)
+
+        # Act
+        result = users_service.give_user_w_access(user_id, category_id)
+
+        # Assert
+        self.assertIsNone(result)
+        mock_read_query.assert_called_once()
+
+    @patch('services.users_service.update_query')
+    def test_giveUserWAccess_when_userHasReadAccess(self, mock_update_query, mock_read_query):
+        # Arrange
+        user_id = 1
+        category_id = 1
+        mock_read_query.side_effect = [[], [(1, 1, 0)]]  # Second query returns data (read access exists)
+
+        # Act
+        result = users_service.give_user_w_access(user_id, category_id)
+
+        # Assert
+        self.assertEqual(result, f'Read access changed to write for user with id {user_id} for category with id {category_id}.')
+        self.assertEqual(mock_read_query.call_count, 2)
+        mock_update_query.assert_called_once()
+
+    @patch('services.users_service.insert_query')
+    def test_giveUserWAccess_when_userHasNoAccess(self, mock_insert_query, mock_read_query):
+        # Arrange
+        user_id = 1
+        category_id = 1
+        mock_read_query.side_effect = [[], []]  # Both queries return empty (no access exists)
+
+        # Act
+        result = users_service.give_user_w_access(user_id, category_id)
+
+        # Assert
+        self.assertEqual(result, f'Write access for category with id {category_id} has been given to user with id {user_id}.')
+        self.assertEqual(mock_read_query.call_count, 2)
+        mock_insert_query.assert_called_once()
+
+    @patch('services.users_service.insert_query')
+    def test_revokeAccess_when_accessExists(self, mock_insert_query, mock_read_query):
+        # Arrange
+        user_id = 1
+        category_id = 1
+        mock_read_query.return_value = [(1, 1, 1)]  # Access exists
+
+        # Act
+        result = users_service.revoke_access(user_id, category_id)
+
+        # Assert
+        self.assertIsInstance(result, NoContent)
+        mock_read_query.assert_called_once()
+        mock_insert_query.assert_called_once()
+
+    def test_revokeAccess_when_accessDoesNotExist(self, mock_read_query):
+        # Arrange
+        user_id = 1
+        category_id = 1
+        mock_read_query.return_value = []  # No access exists
+
+        # Act
+        result = users_service.revoke_access(user_id, category_id)
+
+        # Assert
+        self.assertIsNone(result)
+        mock_read_query.assert_called_once()
+
+    def test_viewPrivilegedUsers_when_usersExist(self, mock_read_query):
+        # Arrange
+        category_id = 1
+        mock_read_query.return_value = [
+            (1, 'test@email.com', 'testuser', 'First', 'Last', 0),
+            (2, 'test2@email.com', 'testuser2', 'First2', 'Last2', 1)
+        ]
+
+        # Act
+        result = users_service.view_privileged_users(category_id)
+
+        # Assert
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0].user_id, 1)
+        self.assertEqual(result[0].email, 'test@email.com')
+        self.assertEqual(result[0].username, 'testuser')
+        self.assertEqual(result[0].first_name, 'First')
+        self.assertEqual(result[0].last_name, 'Last')
+        self.assertEqual(result[0].access_type, 0)
+        mock_read_query.assert_called_once()
+
+    def test_viewPrivilegedUsers_when_noUsers(self, mock_read_query):
+        # Arrange
+        category_id = 1
+        mock_read_query.return_value = []
+
+        # Act
+        result = users_service.view_privileged_users(category_id)
+
+        # Assert
+        self.assertEqual(len(result), 0)
+        self.assertEqual(result, [])
+        mock_read_query.assert_called_once()

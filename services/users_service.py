@@ -126,19 +126,19 @@ def give_user_r_access(user_id, category_id):
                    (user_id, category_id))):
         return None
     
-    if any(read_query('''select user_id, category_id, access_type from private_cat_access
+    elif any(read_query('''select user_id, category_id, access_type from private_cat_access
                         where user_id = ? and category_id = ? and access_type = 1''',
             (user_id, category_id))):
         update_query('''update private_cat_access set access_type = 0
                      where user_id = ? and category_id = ?''',
                 (user_id, category_id))
         return f'Write access changed to read for user with id {user_id} for category with id {category_id}.'
+    else:
+        insert_query('''insert into private_cat_access (private_cat_access.user_id, private_cat_access.category_id, private_cat_access.access_type) 
+                            values(?,?, 0)''',
+                    (user_id, category_id))
 
-    insert_query('''insert into private_cat_access (private_cat_access.user_id, private_cat_access.category_id, private_cat_access.access_type) 
-                        values(?,?, 0)''',
-                 (user_id, category_id))
-
-    return f'Read access for category with id {category_id} has been given to user with id {user_id}.'
+        return f'Read access for category with id {category_id} has been given to user with id {user_id}.'
 
 def give_user_w_access(user_id, category_id):
 
@@ -148,7 +148,7 @@ def give_user_w_access(user_id, category_id):
                    (user_id, category_id))):
         return None
 
-    if any(read_query('''select user_id, category_id, access_type from private_cat_access
+    elif any(read_query('''select user_id, category_id, access_type from private_cat_access
                             where user_id = ? and category_id = ? and access_type = 0''',
                 (user_id, category_id))):
         update_query('''update private_cat_access set access_type = 1
@@ -156,12 +156,12 @@ def give_user_w_access(user_id, category_id):
                 (user_id, category_id))
         return f'Read access changed to write for user with id {user_id} for category with id {category_id}.'
     
+    else:
+        insert_query('''insert into private_cat_access (private_cat_access.user_id, private_cat_access.category_id, private_cat_access.access_type) 
+                            values(?,?, 0)''',
+                    (user_id, category_id))
 
-    insert_query('''insert into private_cat_access (private_cat_access.user_id, private_cat_access.category_id, private_cat_access.access_type) 
-                        values(?,?, 0)''',
-                 (user_id, category_id))
-
-    return f'Write access for category with id {category_id} has been given to user with id {user_id}.'
+        return f'Write access for category with id {category_id} has been given to user with id {user_id}.'
 
 def revoke_access(user_id, category_id):
 

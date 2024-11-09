@@ -10,7 +10,16 @@ replies_router = APIRouter(prefix="/replies", tags=["Replies"])
 @replies_router.post('/')
 def create_reply(reply: ReplyText, token: Annotated[str, Header()]):
 
-    #if user
+    """
+    Creates a new reply for a specific topic. Validates the topic's existence and reply content.
+
+    Args:
+        reply (ReplyText): The reply content, including the associated topic ID and reply text.
+        token (Annotated[str, Header()]): The JWT token for authentication.
+
+    Returns:
+        Union[Dict[str, Any], BadRequest, NotFound, Unauthorized]: A success message if the reply is created, or an error response if validation fails.
+    """
 
     topic = topics_service.get_by_id(reply.topic_id)
     if not topic:

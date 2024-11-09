@@ -5,6 +5,18 @@ from services.users_service import authenticate_user
 
 def vote(reply_id, vote: VoteResult, token):
 
+    """
+    Casts or updates a vote for a specific reply. Checks if the user has already voted and updates or inserts the vote accordingly.
+
+    Args:
+        reply_id (int): The ID of the reply to vote on.
+        vote (VoteResult): The vote data, containing the vote value.
+        token (str): The JWT token for user authentication.
+
+    Returns:
+        str: A message indicating the result of the voting action, such as confirmation of the new vote, or information that the vote has been updated.
+    """
+
     user = authenticate_user(token)
     if user:
         check = read_query(

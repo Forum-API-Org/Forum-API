@@ -5,6 +5,18 @@ from services.users_service import authenticate_user
 
 def create(msg: MessageText, token):
 
+    """
+    Creates a new message from the authenticated user to the specified receiver.
+
+    Args:
+        msg (MessageText): The message content, including receiver ID and text.
+        token (str): The JWT token for user authentication.
+
+    Returns:
+        Union[MessageText, dict]: The created message content if successful, or an error dictionary 
+                                  if the receiver does not exist.
+    """
+
     user = authenticate_user(token)
     if user:
         
@@ -19,7 +31,19 @@ def create(msg: MessageText, token):
 
         return msg
 
-def all_messages(receiver_id: int, token):
+def all_messages(receiver_id: int, token) -> list[MessageOutput]:
+
+    """
+    Retrieves the conversation between the authenticated user and the specified receiver.
+
+    Args:
+        receiver_id (int): The ID of the receiver for the conversation.
+        token (str): The JWT token for user authentication.
+
+    Returns:
+        list[MessageOutput]: A list of `MessageOutput` objects representing messages exchanged 
+                             between the user and the receiver, ordered by message date.
+    """
 
     user = authenticate_user(token)
     if user:
@@ -36,7 +60,18 @@ def all_messages(receiver_id: int, token):
 
         return data
 
-def all_conversations(token):
+def all_conversations(token) -> list[UserResponseChats]:
+
+    """
+    Retrieves a list of users with whom the authenticated user has exchanged messages.
+
+    Args:
+        token (str): The JWT token for user authentication.
+
+    Returns:
+        list[UserResponseChats]: A list of `UserResponseChats` objects representing users involved in 
+                                 conversations with the authenticated user.
+    """
 
     user = authenticate_user(token)
 

@@ -144,10 +144,10 @@ def give_user_write_access(user_category_id: UserCategoryAccess, token: Annotate
 
     return Forbidden('Only admins can access this endpoint')
 
-@user_router.delete('/revoke_access')
+@user_router.delete('/revoke_access', status_code=status.HTTP_204_NO_CONTENT)
 def revoke_user_access(token: Annotated[str, Header()],
-                       user_category_id: UserCategoryAccess,
-                       status_code = status.HTTP_204_NO_CONTENT):
+                       user_category_id: UserCategoryAccess
+                       ):
     """
     Revokes access for a user from a specific category. Only accessible by admins.
 

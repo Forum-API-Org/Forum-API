@@ -7,10 +7,10 @@ from common.responses import BadRequest
 def get_categories():
     data = read_query('select cat_name, creator_id, is_locked, is_private from categories order by id')
 
-    return [(CategoryResponse.from_query_result(cat_name=cat_name,
-                                                creator_id=creator_id,
-                                                is_locked=is_locked,
-                                                is_private=is_private))
+    return [(CategoryResponse(cat_name=cat_name,
+                              creator_id=creator_id,
+                              is_locked=is_locked,
+                              is_private=is_private))
             for cat_name,
             creator_id,
             is_locked,
@@ -58,6 +58,13 @@ def exists(id: int):
         read_query(
             'select id, cat_name from categories where id = ?',
             (id,)))
+
+
+def cat_name_exists(cat_name: str):
+    return any(
+        read_query(
+            'select id, cat_name from categories where cat_name = ?',
+            (cat_name,)))
 
 
 def create(cat_name, creator_id):
@@ -108,3 +115,9 @@ def make_public(id: int):
 def is_owner(user_id, category_id):
     data = read_query('select creator_id from categories where id = ?', (category_id,))
     return user_id == data[0][0]
+
+
+def check_user_access(user_id, category_id):
+    data = read_query('select access_type from private_cat_access where user_id = ? and category_id = ?',
+                      (user_id, category_id))
+    return data[0][0] if data else None

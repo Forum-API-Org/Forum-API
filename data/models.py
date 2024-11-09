@@ -26,22 +26,30 @@ class Topic(BaseModel):
 class TopicResponse(BaseModel):
     top_name: str
     user_id: int
-    topic_date: str  # date
-    is_locked: bool = 0
-    best_reply_id: Optional[int] | None = None
+    topic_date: str  # date as a string
+    is_locked: bool = False
+    best_reply_id: Optional[int] = None
+    replies: Optional[list['ReplyResponse']] = None
 
     @classmethod
     def from_query_result(cls, top_name, user_id, topic_date, is_locked, best_reply_id):
-        return cls(top_name=top_name,
-                   user_id=user_id,
-                   topic_date=topic_date,
-                   is_locked=is_locked,
-                   best_reply_id=best_reply_id)
+        return cls(
+            top_name=top_name,
+            user_id=user_id,
+            topic_date=topic_date,
+            is_locked=is_locked,
+            best_reply_id=best_reply_id
+        )
+
+
+class TopicCreation(BaseModel):
+    top_name: str = Field(min_length=3, max_length=20, examples=['Engines'])
+    category_id: int
 
 
 class Category(BaseModel):
     id: int | None
-    cat_name: str = Field(pattern=r'^[a-zA-Z0-9_.+-]+$', min_length=3, max_length=20, examples=['Cars'])
+    cat_name: str = Field(min_length=3, max_length=20, examples=['Cars'])
     creator_id: int
     is_locked: bool
     is_private: bool
@@ -56,7 +64,7 @@ class Category(BaseModel):
 
 
 class CategoryResponse(BaseModel):
-    cat_name: str = Field(pattern=r'^[a-zA-Z0-9_.+-]+$', min_length=3, max_length=20, examples=['Cars'])
+    cat_name: str = Field(min_length=3, max_length=20, examples=['Cars'])
     creator_id: int
     is_locked: bool
     is_private: bool
@@ -70,9 +78,14 @@ class CategoryResponse(BaseModel):
                    is_private=is_private)
 
 
+class CategoryCreation(BaseModel):
+    cat_name: str = Field(min_length=3, max_length=20, examples=['Cars'])
+
+
 class ReplyText(BaseModel):
     text: str
     topic_id: int
+
 
 class ReplyResponse(BaseModel):
     user_id: int

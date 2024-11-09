@@ -11,6 +11,15 @@ user_router = APIRouter(prefix='/users', tags=['Users'])
 
 @user_router.get('/', response_model=list[UserResponse])
 def get_all_users(token: Annotated[str, Header()]):
+    """
+    Retrieves a list of all users. Only accessible by admins.
+
+    Args:
+        token (Annotated[str, Header()]): The JWT token for authentication.
+
+    Returns:
+        List[UserResponse]: A list of UserResponse objects representing all users.
+    """
     user_data = users_service.authenticate_user(token)
 
     if users_service.is_admin(user_data['is_admin']):
@@ -24,7 +33,15 @@ def get_all_users(token: Annotated[str, Header()]):
                   response_model_exclude={'password', 'is_admin'},
                   status_code=status.HTTP_201_CREATED)
 def register_user(user: User):
+    """
+    Registers a new user with the provided details.
 
+    Args:
+        user (User): The user details.
+
+    Returns:
+        User: The created User object.
+    """
     user = users_service.create_user(user.email,
                                      user.username,
                                      user.password,
@@ -35,6 +52,15 @@ def register_user(user: User):
 
 @user_router.post('/login')
 def login_user(login_data: LoginData):
+    """
+    Authenticates a user with the provided login data and returns a JWT token if successful.
+
+    Args:
+        login_data (LoginData): The login data containing username and password.
+
+    Returns:
+        Dict[str, str]: A dictionary containing the JWT token if authentication is successful.
+    """
     user_data = users_service.login_user(login_data)
 
     if user_data:
@@ -45,6 +71,15 @@ def login_user(login_data: LoginData):
 
 @user_router.post('/logout')
 def logout_user(token: Annotated[str, Header()]):
+    """
+    Logs out a user by blacklisting the provided JWT token.
+
+    Args:
+        token (Annotated[str, Header()]): The JWT token to blacklist.
+
+    Returns:
+        Dict[str, str]: A message indicating the user has been logged out.
+    """
     try:
         result = users_service.blacklist_user(token)
         return {'message': result}
@@ -53,7 +88,16 @@ def logout_user(token: Annotated[str, Header()]):
 
 @user_router.put('/read_access')
 def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
+    """
+    Grants read access to a user for a specific category. Only accessible by admins.
 
+    Args:
+        user_category_id (UserCategoryAccess): The user and category details.
+        token (Annotated[str, Header()]): The JWT token for authentication.
+
+    Returns:
+        Union[str, BadRequest, Forbidden]: A message indicating the access change, or an error response.
+    """
     if not categories_service.exists(user_category_id.category_id):
         return NotFound('Category does not exist!')
 
@@ -73,7 +117,16 @@ def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated
 
 @user_router.put('/write_access')
 def give_user_write_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
+    """
+    Grants write access to a user for a specific category. Only accessible by admins.
 
+    Args:
+        user_category_id (UserCategoryAccess): The user and category details.
+        token (Annotated[str, Header()]): The JWT token for authentication.
+
+    Returns:
+        Union[str, BadRequest, Forbidden]: A message indicating the access change, or an error response.
+    """
     if not categories_service.exists(user_category_id.category_id):
         return NotFound('Category does not exist!')
 
@@ -95,7 +148,17 @@ def give_user_write_access(user_category_id: UserCategoryAccess, token: Annotate
 def revoke_user_access(token: Annotated[str, Header()],
                        user_category_id: UserCategoryAccess,
                        status_code = status.HTTP_204_NO_CONTENT):
+    """
+    Revokes access for a user from a specific category. Only accessible by admins.
 
+    Args:
+        token (Annotated[str, Header()]): The JWT token for authentication.
+        user_category_id (UserCategoryAccess): The user and category details.
+        status_code (int, optional): The status code to return. Defaults to status.HTTP_204_NO_CONTENT.
+
+    Returns:
+        Union[NoContent, BadRequest, Forbidden]: A message indicating the access revocation, or an error response.
+    """
     if not categories_service.exists(user_category_id.category_id):
         return NotFound('Category does not exist!')
 
@@ -116,7 +179,16 @@ def revoke_user_access(token: Annotated[str, Header()],
 @user_router.get('/privileges', response_model=list[UserAccessResponse],
                   response_model_exclude={'password', 'is_admin'})
 def view_privileged_users(token: Annotated[str, Header()], category_id):
+    """
+    Retrieves a list of users with access to a specific category. Only accessible by admins.
 
+    Args:
+        token (Annotated[str, Header()]): The JWT token for authentication.
+        category_id (int): The category ID.
+
+    Returns:
+        List[UserAccessResponse]: A list of UserAccessResponse objects representing users with access to the category.
+    """
     if not categories_service.exists(category_id):
         return NotFound('Category does not exist!')
 

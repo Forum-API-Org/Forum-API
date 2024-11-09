@@ -117,7 +117,7 @@ class User(BaseModel):
     id: int | None = None
     email: str = Field(max_length=45, pattern=r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$', examples=['a@a.com'])     #TEmail
     username: str = Field(pattern=r'^[a-zA-Z0-9_.+-]+$', examples=['user1_+.-'])
-    password: str = Field(min_length=5, max_length=20, pattern=r'^[a-zA-Z\d!@#$%^&*_.+\-]*[a-zA-Z][a-zA-Z\d!@#$%^&*_.+\-]*\d[a-zA-Z\d!@#$%^&*_.+\-]*[!@#$%^&*_.+\-][a-zA-Z\d!@#$%^&*_.+\-]*$')
+    password: str = Field(min_length=5, max_length=20, pattern=r'^[a-zA-Z\d!@#$%^&*_.+\-]*[a-zA-Z]+[a-zA-Z\d!@#$%^&*_.+\-]*\d+[a-zA-Z\d!@#$%^&*_.+\-]*[!@#$%^&*_.+\-]+[a-zA-Z\d!@#$%^&*_.+\-]*$')
     first_name: str = Field(min_length=1, max_length=45, pattern=r'^[a-zA-Z-]+$')
     last_name: str = Field(min_length=1, max_length=45, pattern=r'^[a-zA-Z-]+$')
     is_admin: bool | None = 0

@@ -188,7 +188,7 @@ class UsersRouter_Should(unittest.TestCase):
 
         # Assert
         self.assertIsInstance(result, Forbidden)
-        self.assertEqual(result.body, b'Only admins can access this endpoint')
+        self.assertEqual(result.body, b'Only Neo can access this endpoint')
 
     @patch('routers.users.categories_service.exists')
     @patch('routers.users.users_service.check_if_private')
@@ -287,7 +287,7 @@ class UsersRouter_Should(unittest.TestCase):
 
         # Assert
         self.assertIsInstance(result, Forbidden)
-        self.assertEqual(result.body, b'Only admins can access this endpoint')
+        self.assertEqual(result.body, b'Only Neo can access this endpoint')
 
     @patch('routers.users.categories_service.exists')
     @patch('routers.users.users_service.check_if_private')
@@ -412,7 +412,7 @@ class UsersRouter_Should(unittest.TestCase):
 
         # Assert
         self.assertIsInstance(result, Forbidden)
-        self.assertEqual(result.body, b'Only admins can access this endpoint')
+        self.assertEqual(result.body, b'Only Neo can access this endpoint')
 
     @patch('routers.users.categories_service.exists')
     @patch('routers.users.users_service.check_if_private')
@@ -515,7 +515,7 @@ class UsersRouter_Should(unittest.TestCase):
 
         # Assert
         self.assertIsInstance(result, Forbidden)
-        self.assertEqual(result.body, b'Only admins can access this endpoint')
+        self.assertEqual(result.body, b'Only Neo can access this endpoint')
 
     @patch('routers.users.categories_service.exists')
     @patch('routers.users.users_service.check_if_private')

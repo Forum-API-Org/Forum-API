@@ -98,6 +98,8 @@ def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated
     Returns:
         Union[str, BadRequest, Forbidden]: A message indicating the access change, or an error response.
     """
+    #if UserCategoryAccess.user_id == 1:
+    #    return BadRequest('User is admin so he already has read/write access by default!')
     if not categories_service.exists(user_category_id.category_id):
         return NotFound('Category does not exist!')
 

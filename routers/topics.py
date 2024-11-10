@@ -63,7 +63,7 @@ def get_topics(
         (categories_service.check_if_private(row[6]) is False) or
         (categories_service.check_user_access(user['user_id'], row[6]) is not None)
     ]
-    return topics
+    return topics if topics else NotFound("No topics found for you.")
 
 
 @topics_router.get('/{id}')

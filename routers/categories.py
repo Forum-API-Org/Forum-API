@@ -11,6 +11,13 @@ cat_router = APIRouter(prefix="/categories", tags=["Categories"])
 @cat_router.get('/', response_model=List[CategoryResponse])
 def get_all_categories(token: Annotated[str, Header()]):
 
+    """
+    Get all categories from the database.
+
+    :param token:  JWT token for authentication.
+    :return:  List of CategoryResponse objects.
+    """
+
     authenticate_user(token)
 
     data = categories_service.get_categories()
@@ -20,6 +27,14 @@ def get_all_categories(token: Annotated[str, Header()]):
 
 @cat_router.get('/{id}', response_model=CategoryResponse)
 def get_category_by_id(id: int, token: Annotated[str, Header()]):
+
+    """
+    Get a category by its ID.
+
+    :param id:  The ID of the category. Must exist in the database.
+    :param token:  JWT token for authentication.
+    :return:  CategoryResponse object.
+    """
 
     user = authenticate_user(token)
 
@@ -40,7 +55,18 @@ def get_category_by_id(id: int, token: Annotated[str, Header()]):
 @cat_router.post('/')
 def create_category(name: CategoryCreation, token: Annotated[str, Header()]):
 
+    """
+    Create a new category. Only admins can create categories.
+
+    :param name:  The name of the category. Can't be empty. Should be unique.
+    :param token:  JWT token for authentication.
+    :return:  The created CategoryResponse object.
+    """
+
     user = authenticate_user(token)
+
+    if not name.cat_name:
+        return BadRequest('Category name cannot be empty')
 
     if categories_service.cat_name_exists(name.cat_name):
         return BadRequest('Category name already exists')
@@ -55,6 +81,14 @@ def create_category(name: CategoryCreation, token: Annotated[str, Header()]):
 
 @cat_router.put('/lock/{id}')
 def lock_category(id: int, token: Annotated[str, Header()]):
+
+    """
+    Lock a category. Only admins can lock categories. Category must exist. Category must not be locked.
+
+    :param id:  The ID of the category.
+    :param token:  JWT token for authentication.
+    :return: CategoryResponse object.
+    """
 
     user = authenticate_user(token)
 
@@ -72,6 +106,14 @@ def lock_category(id: int, token: Annotated[str, Header()]):
 @cat_router.put('/make_private/{id}')
 def make_category_private(id: int, token: Annotated[str, Header()]):
 
+    """
+    Make a category private. Only admins can make categories private. Category must exist. Category must not be private.
+
+    :param id:  The ID of the category.
+    :param token:  JWT token for authentication.
+    :return:  CategoryResponse object.
+    """
+
     user = authenticate_user(token)
 
     if not is_admin(user['is_admin']):
@@ -88,6 +130,14 @@ def make_category_private(id: int, token: Annotated[str, Header()]):
 @cat_router.put('/unlock/{id}')
 def unlock_category(id: int, token: Annotated[str, Header()]):
 
+    """
+    Unlock a category. Only admins can unlock categories. Category must exist. Category must be locked.
+
+    :param id:  The ID of the category.
+    :param token:  JWT token for authentication.
+    :return:  CategoryResponse object.
+    """
+
     user = authenticate_user(token)
 
     if not is_admin(user['is_admin']):
@@ -103,6 +153,14 @@ def unlock_category(id: int, token: Annotated[str, Header()]):
 
 @cat_router.put('/make_public/{id}')
 def make_category_public(id: int, token: Annotated[str, Header()]):
+
+    """
+    Make a category public. Only admins can make categories public. Category must exist. Category must be private.
+
+    :param id:  The ID of the category.
+    :param token:  JWT token for authentication.
+    :return:  CategoryResponse object.
+    """
 
     user = authenticate_user(token)
 

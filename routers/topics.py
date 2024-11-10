@@ -18,6 +18,18 @@ def get_topics(
     limit: int = Query(10, description="Number of topics to return"),
     offset: int = Query(0, description="Number of topics to skip")
 ):
+
+    """
+    Get all topics from the database. Only accessible by users with access to the category. Admins can access all topics.
+
+    :param token:  JWT token for authentication.
+    :param search:  Search by topic name. Default is None.
+    :param sort_by:  Field to sort by. Default is 'topic_date'. Possible values: 'topic_date', 'top_name', 'category_id', 'user_id', 'is_locked'.
+    :param sort_order:  Sort order: 'asc' or 'desc'. Default is 'asc'.
+    :param limit:  Number of topics to return. Default is 10.
+    :param offset:  Number of topics to skip. Default is 0.
+    :return:  List of TopicResponse objects.
+    """
     user = authenticate_user(token)
     query = "SELECT id, top_name, user_id, topic_date, is_locked, best_reply_id, category_id FROM topics"
     params = []
@@ -33,7 +45,6 @@ def get_topics(
     query += " LIMIT ? OFFSET ?"
     params.extend([limit, offset])
 
-    # Execute query
     data = read_query(query, params)
     topics = [
         TopicResponse(
@@ -54,6 +65,14 @@ def get_topics(
 
 @topics_router.get('/{id}')
 def get_topic_by_id(id: int, token: Annotated[str, Header()]):
+
+    """
+    Get a topic by its ID. Only accessible by users with access to the category. Admins can access all topics.
+
+    :param id:  The ID of the topic. Must exist in the database.
+    :param token:  JWT token for authentication.
+    :return:  TopicResponse object.
+    """
 
     user = authenticate_user(token)
 
@@ -77,6 +96,14 @@ def get_topic_by_id(id: int, token: Annotated[str, Header()]):
 
 @topics_router.post('/', response_model=TopicResponse, response_model_exclude={"replies", "user_id"})
 def create_topic(topic: TopicCreation, token: Annotated[str, Header()], ):
+
+    """
+    Create a new topic. Only accessible by users with write access to the category. Admins can create topics in any category.
+
+    :param topic:  The topic details.
+    :param token:  JWT token for authentication.
+    :return:  TopicResponse object.
+    """
 
     user = authenticate_user(token)
 
@@ -104,6 +131,14 @@ def create_topic(topic: TopicCreation, token: Annotated[str, Header()], ):
 @topics_router.put('/lock/{id}')
 def lock_topic(id: int, token: Annotated[str, Header()]):
 
+    """
+    Lock a topic. Only admins can lock topics.
+
+    :param id:  The ID of the topic.
+    :param token:  JWT token for authentication.
+    :return:  TopicResponse object.
+    """
+
     user = authenticate_user(token)
 
     if not is_admin(user['is_admin']):
@@ -117,6 +152,14 @@ def lock_topic(id: int, token: Annotated[str, Header()]):
 @topics_router.put('/unlock/{id}')
 def unlock_topic(id: int, token: Annotated[str, Header()]):
 
+    """
+    Unlock a topic. Only admins can unlock topics.
+
+    :param id:  The ID of the topic.
+    :param token:  JWT token for authentication.
+    :return:   TopicResponse object.
+    """
+
     user = authenticate_user(token)
 
     if not is_admin(user['is_admin']):
@@ -129,6 +172,15 @@ def unlock_topic(id: int, token: Annotated[str, Header()]):
 
 @topics_router.put('/{topic_id}/best_reply/{reply_id}')
 def choose_best_reply(topic_id: int, reply_id: int, token: Annotated[str, Header()]):
+
+    """
+    Choose the best reply for a topic. Only the topic owner can choose the best reply.
+
+    :param topic_id:  The ID of the topic.
+    :param reply_id:  The ID of the reply.
+    :param token:  JWT token for authentication.
+    :return:  TopicResponse object.
+    """
 
     user = authenticate_user(token)
 

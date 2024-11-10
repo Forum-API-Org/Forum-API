@@ -180,47 +180,124 @@ uvicorn main:app --reload
 - **Get All Categories**
   - **URL:** `/categories`
   - **Method:** `GET`
+  - **Headers:** `Authorization`
   - **Description:** Retrieves a list of all categories.
   - **Response:**
     - `200 OK`: List of `CategoryResponse` objects.
+  
+- **Get Category by ID**
+  - **URL:** `/categories/{category_id}`
+  - **Method:** `GET`
+  - **Headers:** `Authorization`
+  - **Description:** Retrieves a specific category by ID.
+  - **Response:**
+    - `200 OK`: The `Category` object.
+
+- 
 
 - **Create Category**
   - **URL:** `/categories`
   - **Method:** `POST`
+  - **Headers:** `Authorization`
   - **Body:**
     ```json
     {
-      "name": "New Category",
-      "description": "Description of the new category"
+      "name": "New Category"
     }
     ```
-  - **Description:** Creates a new category with the provided details.
+  - **Description:** Creates a new category with the provided name. Only accessible by `admins`.
   - **Response:**
     - `201 Created`: The created `Category` object.
+
+- **Lock Category**
+  - **URL:** `/categories/lock/{category_id}`
+  - **Method:** `PUT`
+  - **Headers:** `Authorization`
+  - **Description:** Locks a category, preventing new topics from being created in it. Only accessible by `admins`.
+  - **Response:**
+    - `200 OK`: A message indicating the category has been locked.
+
+- **Unlock Category**
+  - **URL:** `/categories/unlock/{category_id}`
+  - **Method:** `PUT`
+  - **Headers:** `Authorization`
+  - **Description:** Unlocks a category, allowing new topics to be created in it. Only accessible by `admins`.
+  - **Response:**
+    - `200 OK`: A message indicating the category has been unlocked.
+
+- **Make Category Private**
+  - **URL:** `/categories/private/{category_id}`
+  - **Method:** `PUT`
+  - **Headers:** `Authorization`
+  - **Description:** Makes a category private, requiring users to have access to view and interact with it. Only accessible by `admins`.
+  - **Response:**
+    - `200 OK`: A message indicating the category has been made private.
+
+- **Make Category Public** 
+    - **URL:** `/categories/public/{category_id}`
+    - **Method:** `PUT`
+    - **Headers:** `Authorization`
+    - **Description:** Makes a category public, allowing all users to view and interact with it. Only accessible by `admins`.
+    - **Response:**
+        - `200 OK`: A message indicating the category has been made public.
 
 ### Topic Management
 
 - **Get All Topics**
-  - **URL:** `/topics`
+    - **URL:** `/topics`
+    - **Method:** `GET`
+    - **Headers:** `Authorization`
+    - **Query Parameters:** `search`, `sort_by`, `sort_order`, `limit`, `offset`
+    - **Description:** Retrieves a list of all topics. Topics from private categories require the user to have read access for this category. Admins can view all topics. The `search` parameter filters topics by name. The `sort_by` parameter specifies the field to sort by (e.g., `topic_date`). The `sort_order` parameter specifies the sort order (`asc` or `desc`). The `limit` and `offset` parameters are used for pagination.
+    - **Response:**
+        - `200 OK`: List of `TopicResponse` objects.
+
+- **Get Topic by ID** 
+  - **URL:** `/topics/{topic_id}`
   - **Method:** `GET`
-  - **Description:** Retrieves a list of all topics.
+  - **Headers:** `Authorization`
+  - **Description:** Retrieves a specific topic by ID. Topics from private categories require the user to have read access for this category. Admins can view all topics.
   - **Response:**
-    - `200 OK`: List of `TopicResponse` objects.
+    - `200 OK`: The `Topic` object.
 
 - **Create Topic**
   - **URL:** `/topics`
   - **Method:** `POST`
+  - **Headers:** `Authorization`
   - **Body:**
     ```json
     {
-      "title": "New Topic",
-      "content": "Content of the new topic",
+      "name": "New Topic",
       "category_id": 1
     }
     ```
-  - **Description:** Creates a new topic with the provided details.
+  - **Description:** Creates a new topic with the provided details. Every user can create a topic in a public category. Only admins and users with write access can create topics in private categories.
   - **Response:**
     - `201 Created`: The created `Topic` object.
+
+- **Lock Topic** 
+  - **URL:** `/topics/lock/{topic_id}`
+  - **Method:** `PUT`
+  - **Headers:** `Authorization`
+  - **Description:** Locks a topic, preventing new replies from being added to it. Only accessible by `admins`.
+  - **Response:**
+    - `200 OK`: A message indicating the topic has been locked.
+
+- **Unlock Topic** 
+  - **URL:** `/topics/unlock/{topic_id}`
+  - **Method:** `PUT`
+  - **Headers:** `Authorization`
+  - **Description:** Unlocks a topic, allowing new replies to be added to it. Only accessible by `admins`.
+  - **Response:**
+    - `200 OK`: A message indicating the topic has been unlocked.
+
+- **Choose Best Reply**
+  - **URL:** `/topics/best_reply/{topic_id}`
+  - **Method:** `PUT`
+  - **Headers:** `Authorization`
+  - **Description:** Marks a reply as the best reply for a topic. Only accessible by the `topic owner`.
+  - **Response:**
+    - `200 OK`: A message indicating the best reply has been chosen.
 
 ### Message Management
 

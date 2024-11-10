@@ -46,6 +46,7 @@ def get_topics(
     params.extend([limit, offset])
 
     data = read_query(query, params)
+
     topics = [
         TopicResponse(
             top_name=row[1],

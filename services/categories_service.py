@@ -196,7 +196,7 @@ def unlock(id: int):
 def make_public(id: int):
 
     """
-    Make a category public. Must not be public already.
+    Make a category public. Must not be public already. Remove all private access.
 
     :param id:  The ID of the category.
     :return:  The public Category object.
@@ -205,6 +205,7 @@ def make_public(id: int):
     if not check_if_private(id):
         return BadRequest('Category is already public.')
     update_query('update categories set is_private = 0 where id = ?', (id,))
+    insert_query('''delete from private_cat_access where category_id = ?''', (id,))
     return get_by_id(id)
 
 

@@ -1,6 +1,5 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Category, Topic, CategoryResponse, TopicResponse
-import datetime
+from data.models import CategoryResponse, TopicResponse
 from common.responses import BadRequest
 
 

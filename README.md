@@ -301,10 +301,10 @@ uvicorn main:app --reload
 
 ### Message Management
 
-- **Get All Messages**
+- **Get Conversation**
   - **URL:** `/messages`
   - **Method:** `GET`
-  - **Description:** Retrieves a list of all messages.
+  - **Description:** Retrieves a list of all messages with a user.
   - **Response:**
     - `200 OK`: List of `MessageResponse` objects.
 
@@ -314,22 +314,21 @@ uvicorn main:app --reload
   - **Body:**
     ```json
     {
-      "content": "Content of the new message",
-      "topic_id": 1
+      "text": "Content of the new message",
+      "receiver_id": 1
     }
     ```
   - **Description:** Creates a new message with the provided details.
   - **Response:**
     - `201 Created`: The created `Message` object.
 
-### Reply Management
-
-- **Get All Replies**
-  - **URL:** `/replies`
+- **Get Conversaions**
+  - **URL:** `/messages`
   - **Method:** `GET`
-  - **Description:** Retrieves a list of all replies.
+  - **Description:** Retrieves a list of conversations of the user.
   - **Response:**
-    - `200 OK`: List of `ReplyResponse` objects.
+    - `200 OK`: List of `MessageResponse` objects.
+### Reply Management
 
 - **Create Reply**
   - **URL:** `/replies`
@@ -337,41 +336,27 @@ uvicorn main:app --reload
   - **Body:**
     ```json
     {
-      "content": "Content of the new reply",
-      "message_id": 1
+      "text": "Content of the new reply",
+      "topic_id": 1
     }
     ```
-  - **Description:** Creates a new reply with the provided details.
+  - **Description:** Creates a new reply with the provided details to a topic.
   - **Response:**
     - `201 Created`: The created `Reply` object.
 
 ### Voting
 
-- **Vote on Topic**
+- **Vote on Reply**
   - **URL:** `/votes/topic`
   - **Method:** `POST`
   - **Body:**
     ```json
     {
-      "topic_id": 1,
-      "vote_type": "upvote"
+      "reply_id": 1,
+      "vote": "upvote"
     }
     ```
-  - **Description:** Casts a vote on a topic.
-  - **Response:**
-    - `200 OK`: A message indicating the vote was successful.
-
-- **Vote on Message**
-  - **URL:** `/votes/message`
-  - **Method:** `POST`
-  - **Body:**
-    ```json
-    {
-      "message_id": 1,
-      "vote_type": "upvote"
-    }
-    ```
-  - **Description:** Casts a vote on a message.
+  - **Description:** Casts a vote on a reply.
   - **Response:**
     - `200 OK`: A message indicating the vote was successful.
 

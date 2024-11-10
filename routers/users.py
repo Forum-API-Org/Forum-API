@@ -103,7 +103,7 @@ def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated
     if not categories_service.exists(user_category_id.category_id):
         return NotFound('Category does not exist!')
 
-    if not users_service.check_if_private(user_category_id.category_id):
+    if not categories_service.check_if_private(user_category_id.category_id):
         return BadRequest(f'Category {user_category_id.category_id} is not private.')
 
     if not users_service.user_id_exists(user_category_id.user_id):
@@ -132,7 +132,7 @@ def give_user_write_access(user_category_id: UserCategoryAccess, token: Annotate
     if not categories_service.exists(user_category_id.category_id):
         return NotFound('Category does not exist!')
 
-    if not users_service.check_if_private(user_category_id.category_id):
+    if not categories_service.check_if_private(user_category_id.category_id):
         return BadRequest(f'Category {user_category_id.category_id} is not private.')
 
     if not users_service.user_id_exists(user_category_id.user_id):

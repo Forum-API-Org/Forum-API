@@ -25,9 +25,9 @@ def create_reply(reply: ReplyText, token: Annotated[str, Header()]):
     if not topic:
         return NotFound(content="Topic not found.")
     
-    # if topic.status != "open":
-    #     return BadRequest(content="This topic is closed for new replies.")
-
+    if topics_service.check_if_locked(reply.topic_id):
+        return Unauthorized(content="This topic is locked.")
+    
     if not reply.text.strip():
         return BadRequest(content="Reply text cannot be empty.")
 

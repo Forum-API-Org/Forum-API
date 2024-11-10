@@ -544,12 +544,12 @@ class UserServiceShould(unittest.TestCase):
 
         # Assert
         self.assertEqual(len(result), 2)
-        self.assertEqual(result[0].user_id, 1)
+        self.assertEqual(result[0].id, 1)
         self.assertEqual(result[0].email, 'test@email.com')
         self.assertEqual(result[0].username, 'testuser')
         self.assertEqual(result[0].first_name, 'First')
         self.assertEqual(result[0].last_name, 'Last')
-        self.assertEqual(result[0].access_type, 0)
+        self.assertEqual(result[0].access, 'read')
         mock_read_query.assert_called_once()
 
     def test_viewPrivilegedUsers_when_noUsers(self, mock_read_query):

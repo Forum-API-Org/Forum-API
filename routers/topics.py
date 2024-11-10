@@ -107,6 +107,9 @@ def create_topic(topic: TopicCreation, token: Annotated[str, Header()], ):
 
     user = authenticate_user(token)
 
+    if not categories_service.exists(topic.category_id):
+        return NotFound('Category not found')
+
     if categories_service.check_if_private(topic.category_id):
 
         access = categories_service.check_user_access(user['user_id'], topic.category_id)

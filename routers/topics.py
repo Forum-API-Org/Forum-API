@@ -2,7 +2,7 @@ from fastapi import APIRouter, Header, Query, HTTPException
 from typing import Optional, List
 from data.database import read_query
 from data.models import Topic, TopicCreation, TopicResponse
-from services import topics_service, categories_service
+from services import topics_service, categories_service, replies_service
 from common.responses import NotFound, BadRequest
 from typing import Annotated
 from services.users_service import authenticate_user, is_admin
@@ -193,6 +193,12 @@ def choose_best_reply(topic_id: int, reply_id: int, token: Annotated[str, Header
     """
 
     user = authenticate_user(token)
+
+    if not topics_service.exists(topic_id):
+        return NotFound('Topic not found')
+
+    if not replies_service.reply_exists(reply_id):
+        return NotFound('Reply not found')
 
     if not topics_service.is_owner(user['user_id'], topic_id):
         return BadRequest('Only topic owners can choose best replies')

@@ -67,7 +67,7 @@ def login_user(login_data: LoginData):
         token = users_service.create_token(user_data)
         return {'token': token}
     else:
-        return Unauthorized('Invalid username or password!')
+        return Unauthorized('The spoon does not exist, but your credentials should! Check them again.')
 
 @user_router.post('/logout')
 def logout_user(token: Annotated[str, Header()]):

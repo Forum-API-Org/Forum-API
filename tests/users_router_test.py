@@ -83,7 +83,7 @@ class UsersRouter_Should(unittest.TestCase):
         # Assert
         self.assertIsInstance(result, Unauthorized)
         self.assertEqual(result.status_code, 401)
-        self.assertEqual(result.body, b'Invalid username or password!')
+        self.assertEqual(result.body, b'The spoon does not exist, but your credentials should! Check them again.')
         mock_login_user.assert_called_once_with(login_data)
 
     @patch('services.users_service.blacklist_user')
@@ -130,11 +130,13 @@ class UsersRouter_Should(unittest.TestCase):
         mock_exists.assert_called_once_with(user_category.category_id)
 
     @patch('routers.users.categories_service.exists')
-    @patch('routers.users.users_service.check_if_private')
-    def test_giveUserReadAccess_when_categoryNotPrivate(self, mock_check_private, mock_exists):
+    @patch('routers.users.categories_service.check_if_private')
+    @patch('routers.users.users_service.authenticate_user')
+    def test_giveUserReadAccess_when_categoryNotPrivate(self, mock_auth, mock_check_private, mock_exists):
         # Arrange
         user_category = UserCategoryAccess(user_id=1, category_id=1)
-        token = "valid.token"
+        token = 'valid_token'
+        mock_auth.return_value = {'is_admin': True}
         mock_exists.return_value = True
         mock_check_private.return_value = False
 
@@ -229,7 +231,7 @@ class UsersRouter_Should(unittest.TestCase):
         mock_exists.assert_called_once_with(user_category.category_id)
 
     @patch('routers.users.categories_service.exists')
-    @patch('routers.users.users_service.check_if_private')
+    @patch('routers.users.categories_service.check_if_private')
     def test_giveUserWriteAccess_when_categoryNotPrivate(self, mock_check_private, mock_exists):
         # Arrange
         user_category = UserCategoryAccess(user_id=1, category_id=1)

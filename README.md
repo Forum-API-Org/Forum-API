@@ -53,8 +53,9 @@ Create a `.env` file in the root directory of the project and add the following 
 
 ```env
 JWT_SECRET_KEY=your_secret_key
-DATABASE_URL=your_database_url
+
 ```
+5. Database Setup - scripts available in the folder `scripts`
 
 ## Usage
 
@@ -86,7 +87,7 @@ uvicorn main:app --reload
     {
       "email": "test@example.com",
       "username": "testuser",
-      "password": "password123",
+      "password": "password123!",
       "first_name": "Test",
       "last_name": "User"
     }
@@ -102,7 +103,7 @@ uvicorn main:app --reload
     ```json
     {
       "username": "testuser",
-      "password": "password123"
+      "password": "password123!"
     }
     ```
   - **Description:** Authenticates a user with the provided login data and returns a JWT token if successful.

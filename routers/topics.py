@@ -143,6 +143,9 @@ def lock_topic(id: int, token: Annotated[str, Header()]):
     """
 
     user = authenticate_user(token)
+    cat_id = topics_service.check_category(id)
+    if not categories_service.exists(cat_id):
+        return NotFound('Category not found')
 
     if not is_admin(user['is_admin']):
         return BadRequest('Only admins can lock topics')
@@ -164,6 +167,10 @@ def unlock_topic(id: int, token: Annotated[str, Header()]):
     """
 
     user = authenticate_user(token)
+
+    cat_id = topics_service.check_category(id)
+    if not categories_service.exists(cat_id):
+        return NotFound('Category not found')
 
     if not is_admin(user['is_admin']):
         return BadRequest('Only admins can unlock topics')

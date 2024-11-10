@@ -3,7 +3,7 @@ from typing import Optional, List
 from data.database import read_query
 from data.models import Topic, TopicCreation, TopicResponse
 from services import topics_service, categories_service, replies_service
-from common.responses import NotFound, BadRequest
+from common.responses import NotFound, BadRequest, Forbidden, Unauthorized
 from typing import Annotated
 from services.users_service import authenticate_user, is_admin
 topics_router = APIRouter(prefix="/topics", tags=["Topics"])
@@ -87,10 +87,10 @@ def get_topic_by_id(id: int, token: Annotated[str, Header()]):
         access = categories_service.check_user_access(user['user_id'], topics_service.check_category(id))
 
         if access is None and not is_admin(user['is_admin']):
-            return BadRequest('Category is private')
+            return Unauthorized('Category is private')
 
     if topic is None:
-        return NotFound()
+        return NotFound('Topic not found')
 
     return topic
 
@@ -116,13 +116,13 @@ def create_topic(topic: TopicCreation, token: Annotated[str, Header()], ):
         access = categories_service.check_user_access(user['user_id'], topic.category_id)
 
         if access is None and not is_admin(user['is_admin']):
-            return BadRequest('Category is private')
+            return Unauthorized('Category is private')
 
         if access == 0 and not is_admin(user['is_admin']):
-            return BadRequest('You have only read access to this category')
+            return Unauthorized('You have only read access to this category')
 
     if categories_service.check_if_locked(topic.category_id):
-        return BadRequest('Category is locked')
+        return Forbidden('Category is locked')
 
     if topics_service.top_name_exists(topic.top_name):
         return BadRequest('Topic name already exists')
@@ -148,7 +148,7 @@ def lock_topic(id: int, token: Annotated[str, Header()]):
         return NotFound('Topic not found')
 
     if not is_admin(user['is_admin']):
-        return BadRequest('Only admins can lock topics')
+        return Forbidden('Only admins can lock topics')
 
     result = topics_service.lock(id)
 
@@ -172,7 +172,7 @@ def unlock_topic(id: int, token: Annotated[str, Header()]):
         return NotFound('Topic not found')
 
     if not is_admin(user['is_admin']):
-        return BadRequest('Only admins can unlock topics')
+        return Forbidden('Only admins can unlock topics')
 
     result = topics_service.unlock(id)
 
@@ -200,7 +200,7 @@ def choose_best_reply(topic_id: int, reply_id: int, token: Annotated[str, Header
         return NotFound('Reply not found')
 
     if not topics_service.is_owner(user['user_id'], topic_id):
-        return BadRequest('Only topic owners can choose best replies')
+        return Forbidden('Only topic owners can choose best replies')
 
     if not topics_service.reply_belongs_to_topic(reply_id, topic_id):
         return BadRequest('Reply does not belong to topic')

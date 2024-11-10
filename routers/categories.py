@@ -39,13 +39,13 @@ def get_category_by_id(id: int, token: Annotated[str, Header()]):
     user = authenticate_user(token)
 
     if not categories_service.exists(id):
-        return BadRequest('Category not found')
+        return NotFound('Category not found')
 
     if categories_service.check_if_private(id):
         access = categories_service.check_user_access(user['user_id'], id)
 
         if access is None and not is_admin(user['is_admin']):
-            return BadRequest('Category is private')
+            return Forbidden('Category is private')
 
     category = categories_service.get_by_id(id)
 
@@ -72,7 +72,7 @@ def create_category(name: CategoryCreation, token: Annotated[str, Header()]):
         return BadRequest('Category name already exists')
 
     if not is_admin(user['is_admin']):
-        return BadRequest('Only admins can create categories')
+        return Forbidden('Only admins can create categories')
 
     category = categories_service.create(name.cat_name, user['user_id'])
 
@@ -93,7 +93,7 @@ def lock_category(id: int, token: Annotated[str, Header()]):
     user = authenticate_user(token)
 
     if not is_admin(user['is_admin']):
-        return BadRequest('Only admins can lock categories')
+        return Forbidden('Only admins can lock categories')
 
     if not categories_service.exists(id):
         return NotFound('Category not found')
@@ -117,7 +117,7 @@ def make_category_private(id: int, token: Annotated[str, Header()]):
     user = authenticate_user(token)
 
     if not is_admin(user['is_admin']):
-        return BadRequest('Only admins can make categories private')
+        return Forbidden('Only admins can make categories private')
 
     if not categories_service.exists(id):
         return NotFound('Category not found')
@@ -141,7 +141,7 @@ def unlock_category(id: int, token: Annotated[str, Header()]):
     user = authenticate_user(token)
 
     if not is_admin(user['is_admin']):
-        return BadRequest('Only admins can unlock categories')
+        return Forbidden('Only admins can unlock categories')
 
     if not categories_service.exists(id):
         return NotFound('Category not found')
@@ -165,7 +165,7 @@ def make_category_public(id: int, token: Annotated[str, Header()]):
     user = authenticate_user(token)
 
     if not is_admin(user['is_admin']):
-        return BadRequest('Only admins can make categories public')
+        return Forbidden('Only admins can make categories public')
 
     if not categories_service.exists(id):
         return NotFound('Category not found')

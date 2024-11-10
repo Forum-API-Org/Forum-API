@@ -1,10 +1,5 @@
 # Forum-API
 
-Sure! Here's a more general 
-
-README.md
-
- file that includes references to all the related modules:
 
 ```markdown
 # Forum API

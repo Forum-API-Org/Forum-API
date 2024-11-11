@@ -1,6 +1,5 @@
 # Forum-API - Triple AAA team
-
-![alt text](https://files.oaiusercontent.com/file-8YxFU8SmFaLfD45Ixhk5rhd5?se=2024-11-10T15%3A04%3A44Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3Dc38cb482-a24a-4ff5-9d42-59e3b4c243af.webp&sig=Y%2BOUw%2BJl4hsQho1StjI6Fx50TAWbgEo6yM2fDGAyhsc%3D)
+![image (2)](https://github.com/user-attachments/assets/59eea577-c837-41d9-a8e7-1514ad7d5809)
 
 ```markdown
 # Forum API

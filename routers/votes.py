@@ -20,8 +20,8 @@ def put_vote(reply_id: int, vote: VoteResult, token: Annotated[str, Header()]):
     Returns:
         Union[Dict[str, Any], NotFound]: A success message if the vote is cast successfully, or an error message if the reply is not found.
     """
-    if vote.vote != 'downvote' or vote.vote != 'upvote':
-        return BadRequest(content="Vote should be upvote or downvote.")
+    # if vote.vote != 'downvote' or vote.vote != 'upvote':
+    #     return BadRequest(content="Vote should be upvote or downvote.")
 
     if not replies_service.reply_exists(reply_id):
         return NotFound(content="Reply is not found.")

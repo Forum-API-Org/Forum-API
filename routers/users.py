@@ -26,7 +26,7 @@ def get_all_users(token: Annotated[str, Header()]):
         data = users_service.get_users()#response_model=List[schemas.User]
         return data
 
-    return Forbidden('Only admins can access this endpoint')
+    return Forbidden('Only Neo can access this endpoint')
 
 
 @user_router.post('/', response_model=User,
@@ -67,7 +67,7 @@ def login_user(login_data: LoginData):
         token = users_service.create_token(user_data)
         return {'token': token}
     else:
-        return Unauthorized('Invalid username or password!')
+        return Unauthorized('The spoon does not exist, but your credentials should! Check them again.')
 
 @user_router.post('/logout')
 def logout_user(token: Annotated[str, Header()]):
@@ -115,7 +115,7 @@ def give_user_read_access(user_category_id: UserCategoryAccess, token: Annotated
         data = users_service.give_user_r_access(user_category_id.user_id, user_category_id.category_id)#response_model=List[schemas.User]
         return data or BadRequest(f'User with id {user_category_id.user_id} already has read access for category with id {user_category_id.category_id}!')
 
-    return Forbidden('Only admins can access this endpoint')
+    return Forbidden('Only Neo can access this endpoint')
 
 @user_router.put('/write_access')
 def give_user_write_access(user_category_id: UserCategoryAccess, token: Annotated[str, Header()]): # 0 write, 1 read
@@ -144,7 +144,7 @@ def give_user_write_access(user_category_id: UserCategoryAccess, token: Annotate
         data = users_service.give_user_w_access(user_category_id.user_id, user_category_id.category_id)#response_model=List[schemas.User]
         return data or BadRequest(f'User with id {user_category_id.user_id} already has write access for category with id {user_category_id.category_id}!')
 
-    return Forbidden('Only admins can access this endpoint')
+    return Forbidden('Only Neo can access this endpoint')
 
 @user_router.delete('/revoke_access', status_code=status.HTTP_204_NO_CONTENT)
 def revoke_user_access(token: Annotated[str, Header()],
@@ -176,7 +176,7 @@ def revoke_user_access(token: Annotated[str, Header()],
         data = users_service.revoke_access(user_category_id.user_id, user_category_id.category_id)#response_model=List[schemas.User]
         return data or BadRequest(f'User with id {user_category_id.user_id} has no existing access for category with id {user_category_id.category_id}!')
 
-    return Forbidden('Only admins can access this endpoint')
+    return Forbidden('Only Neo can access this endpoint')
 
 @user_router.get('/privileges', response_model=list[UserAccessResponse],
                   response_model_exclude={'password', 'is_admin'})
@@ -203,5 +203,5 @@ def view_privileged_users(token: Annotated[str, Header()], category_id):
         data = users_service.view_privileged_users(category_id)
         return data
 
-    return Forbidden('Only admins can access this endpoint')
+    return Forbidden('Only Neo can access this endpoint')
 

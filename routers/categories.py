@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
 from services.users_service import *
-from data.models import CategoryResponse, TopicResponse, CategoryCreation
+from data.models import CategoryResponse, CategoryCreation
 from common.responses import NotFound, BadRequest
 from services import categories_service
 from typing import Annotated, List
@@ -155,7 +155,8 @@ def unlock_category(id: int, token: Annotated[str, Header()]):
 def make_category_public(id: int, token: Annotated[str, Header()]):
 
     """
-    Make a category public. Only admins can make categories public. Category must exist. Category must be private. Remove all private access.
+    Make a category public.
+    Only admins can make categories public. Category must exist. Category must be private. Remove all private access.
 
     :param id:  The ID of the category.
     :param token:  JWT token for authentication.

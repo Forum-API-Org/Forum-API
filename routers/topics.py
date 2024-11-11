@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header, Query, HTTPException
 from typing import Optional, List
 from data.database import read_query
-from data.models import Topic, TopicCreation, TopicResponse
+from data.models import TopicCreation, TopicResponse
 from services import topics_service, categories_service, replies_service
 from common.responses import NotFound, BadRequest, Forbidden, Unauthorized
 from typing import Annotated
@@ -20,11 +20,13 @@ def get_topics(
 ):
 
     """
-    Get all topics from the database. Only accessible by users with access to the category. Admins can access all topics.
+    Get all topics from the database.
+    Only accessible by users with access to the category. Admins can access all topics.
 
     :param token:  JWT token for authentication.
     :param search:  Search by topic name. Default is None.
-    :param sort_by:  Field to sort by. Default is 'topic_date'. Possible values: 'topic_date', 'top_name', 'category_id', 'user_id', 'is_locked'.
+    :param sort_by:  Field to sort by.
+    Default is 'topic_date'. Possible values: 'topic_date', 'top_name', 'category_id', 'user_id', 'is_locked'.
     :param sort_order:  Sort order: 'asc' or 'desc'. Default is 'asc'.
     :param limit:  Number of topics to return. Default is 10.
     :param offset:  Number of topics to skip. Default is 0.
@@ -61,7 +63,7 @@ def get_topics(
         (categories_service.check_if_private(row[6]) is False) or
         (categories_service.check_user_access(user['user_id'], row[6]) is not None)
     ]
-    return topics
+    return topics if topics else NotFound("No topics found for you.")
 
 
 @topics_router.get('/{id}')
@@ -99,7 +101,8 @@ def get_topic_by_id(id: int, token: Annotated[str, Header()]):
 def create_topic(topic: TopicCreation, token: Annotated[str, Header()], ):
 
     """
-    Create a new topic. Only accessible by users with write access to the category. Admins can create topics in any category.
+    Create a new topic.
+    Only accessible by users with write access to the category. Admins can create topics in any category.
 
     :param topic:  The topic details.
     :param token:  JWT token for authentication.

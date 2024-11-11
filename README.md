@@ -1,5 +1,6 @@
-# Forum-API
+# Forum-API - Triple AAA team
 
+![alt text](https://files.oaiusercontent.com/file-8YxFU8SmFaLfD45Ixhk5rhd5?se=2024-11-10T15%3A04%3A44Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3Dc38cb482-a24a-4ff5-9d42-59e3b4c243af.webp&sig=Y%2BOUw%2BJl4hsQho1StjI6Fx50TAWbgEo6yM2fDGAyhsc%3D)
 
 ```markdown
 # Forum API
@@ -52,8 +53,9 @@ Create a `.env` file in the root directory of the project and add the following 
 
 ```env
 JWT_SECRET_KEY=your_secret_key
-DATABASE_URL=your_database_url
+
 ```
+5. Database Setup - scripts available in the folder `scripts`
 
 ## Usage
 
@@ -85,7 +87,7 @@ uvicorn main:app --reload
     {
       "email": "test@example.com",
       "username": "testuser",
-      "password": "password123",
+      "password": "password123!",
       "first_name": "Test",
       "last_name": "User"
     }
@@ -101,7 +103,7 @@ uvicorn main:app --reload
     ```json
     {
       "username": "testuser",
-      "password": "password123"
+      "password": "password123!"
     }
     ```
   - **Description:** Authenticates a user with the provided login data and returns a JWT token if successful.

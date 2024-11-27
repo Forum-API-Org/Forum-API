@@ -54,7 +54,7 @@ Create a `.env` file in the root directory of the project and add the following 
 JWT_SECRET_KEY=your_secret_key
 
 ```
-5. Database Setup - scripts available in the folder `scripts`
+5. Database Setup - scripts available in the folder `scripts` - SCRIPTS NEED TO BE UPDATED IN ORDER TO WORK PROPERLY, please stay tuned.
 
 ## Usage
 

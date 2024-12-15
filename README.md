@@ -369,10 +369,8 @@ pip install -r requirements-test.txt
 ```bash
 pytest
 ```
+Created by the AAA team.
 
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
 ```
 
 This `README.md` file provides a general overview of the project, installation instructions, usage details, API endpoints, and information on running tests. Adjust the content as needed to fit your specific project details.This `README.md` file provides a general overview of the project, installation instructions, usage details, API endpoints, and information on running tests. Adjust the content as needed to fit your specific project details.

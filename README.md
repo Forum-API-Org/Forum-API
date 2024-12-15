@@ -372,5 +372,3 @@ pytest
 Created by the AAA team.
 
 ```
-
-This `README.md` file provides a general overview of the project, installation instructions, usage details, API endpoints, and information on running tests. Adjust the content as needed to fit your specific project details.This `README.md` file provides a general overview of the project, installation instructions, usage details, API endpoints, and information on running tests. Adjust the content as needed to fit your specific project details.
